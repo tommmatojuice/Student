@@ -56,7 +56,7 @@ void Paint::slotTimer(){
     scene->setSceneRect(0,0, ui->graphicsView->width() - 20, ui->graphicsView->height() - 20);
     if(str_open!=""){
         scene->clear();
-        QPixmap image("image.bmp");
+        QPixmap image("image.png");
         QSize PicSize(scene->width(), scene->height());
         image = image.scaled(PicSize,Qt::KeepAspectRatio);
         scene->addPixmap(image);
@@ -69,11 +69,11 @@ void Paint::resizeEvent(QResizeEvent *event){
     QImage image(scene->width(), scene->height(), QImage::Format_ARGB32_Premultiplied);
     QPainter painter(&image);
     scene->render(&painter);
-    image.save("image.bmp");
+    image.save("image.png");
     QWidget::resizeEvent(event);
     if(str_open!=""){
         scene->clear();
-        QPixmap image("image.bmp");
+        QPixmap image("image.png");
         QSize PicSize(scene->width(), scene->height());
         image = image.scaled(PicSize,Qt::KeepAspectRatio);
         scene->addPixmap(image);
