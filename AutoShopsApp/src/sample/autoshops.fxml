@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.AutoshopsController">
+   <children>
+      <AnchorPane layoutY="78.0" prefHeight="521.0" prefWidth="800.0" style="-fx-background-color: #87CEFA;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="78.0">
+         <children>
+            <JFXTreeTableView layoutX="36.0" layoutY="99.0" prefHeight="401.0" prefWidth="728.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutY="34.0" prefHeight="33.0" prefWidth="800.0" />
+      <JFXButton prefHeight="79.0" prefWidth="138.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Автомастерские" textFill="#006fb7">
+         <font>
+            <Font name="Roboto Medium" size="13.0" />
+         </font>
+      </JFXButton>
+      <JFXButton layoutX="138.0" prefHeight="79.0" prefWidth="138.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Автомастерские" textFill="#006fb7">
+         <font>
+            <Font name="Roboto Medium" size="13.0" />
+         </font>
+      </JFXButton>
+   </children>
+</AnchorPane>
