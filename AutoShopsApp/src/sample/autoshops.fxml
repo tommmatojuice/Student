@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -16,22 +18,74 @@
    <right>
       <AnchorPane prefHeight="259.0" prefWidth="50.0" style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER" />
    </right>
-   <bottom>
-      <AnchorPane prefHeight="45.0" prefWidth="600.0" style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER" />
-   </bottom>
+   <center>
+      <TableView fx:id="auto_table" prefHeight="420.0" prefWidth="705.0" BorderPane.alignment="CENTER" />
+   </center>
    <top>
-      <GridPane prefHeight="106.0" prefWidth="600.0" style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER">
-         <columnConstraints>
+      <GridPane minHeight="120.0" minWidth="800.0" prefWidth="800.0" style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-         </columnConstraints>
-         <rowConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="800.0" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-         </rowConstraints>
+        </rowConstraints>
          <children>
-            <JFXButton prefHeight="55.0" prefWidth="126.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Автомастерские" textFill="#006fb7">
+            <JFXButton maxWidth="200.0" minWidth="80.0" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Автомастерские" textFill="#006fb7">
+               <font>
+                  <Font name="Roboto Medium" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton layoutX="10.0" layoutY="10.0" maxWidth="200.0" minWidth="80.0" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Мастера" textFill="#006fb7" GridPane.columnIndex="1">
+               <font>
+                  <Font name="Roboto Medium" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton layoutX="10.0" layoutY="10.0" maxWidth="200.0" minWidth="80.0" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Автомобили" textFill="#006fb7" GridPane.columnIndex="2">
+               <font>
+                  <Font name="Roboto Medium" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton layoutX="10.0" layoutY="10.0" maxWidth="200.0" minWidth="80.0" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Клиенты" textFill="#006fb7" GridPane.columnIndex="3">
+               <font>
+                  <Font name="Roboto Medium" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton layoutX="10.0" layoutY="10.0" maxWidth="200.0" minWidth="80.0" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Марки" textFill="#006fb7" GridPane.columnIndex="4">
+               <font>
+                  <Font name="Roboto Medium" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton layoutX="10.0" layoutY="10.0" maxWidth="200.0" minWidth="80.0" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Услуги" textFill="#006fb7" GridPane.columnIndex="5">
+               <font>
+                  <Font name="Roboto Medium" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton layoutX="10.0" layoutY="10.0" maxWidth="200.0" minWidth="80.0" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Расходники" textFill="#006fb7" GridPane.columnIndex="6">
+               <font>
+                  <Font name="Roboto Medium" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton layoutX="10.0" layoutY="10.0" maxWidth="200.0" minWidth="80.0" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Ремонтные работы" textFill="#006fb7" GridPane.columnIndex="7">
+               <font>
+                  <Font name="Roboto Medium" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton layoutX="10.0" layoutY="10.0" maxWidth="200.0" minWidth="80.0" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #006fb7;" text="Контракты" textFill="#006fb7" GridPane.columnIndex="8">
+               <font>
+                  <Font name="Roboto Medium" size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton layoutX="661.0" layoutY="10.0" maxWidth="200.0" minWidth="80.0" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #006fb7; -fx-border-color: #006fb7;" text="Выход" textFill="WHITE" GridPane.columnIndex="9">
                <font>
                   <Font name="Roboto Medium" size="13.0" />
                </font>
@@ -39,7 +93,42 @@
          </children>
       </GridPane>
    </top>
-   <center>
-      <TableView fx:id="auto_table" prefHeight="200.0" prefWidth="700.0" BorderPane.alignment="CENTER" />
-   </center>
+   <bottom>
+      <GridPane style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <TextField fx:id="adress_enter" promptText="Адресс">
+               <GridPane.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </GridPane.margin>
+            </TextField>
+            <TextField fx:id="name_enter" promptText="Название" GridPane.columnIndex="1">
+               <GridPane.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </GridPane.margin>
+            </TextField>
+            <JFXButton fx:id="add_button" layoutX="592.0" layoutY="20.0" maxWidth="375.0" prefHeight="27.0" prefWidth="170.0" style="-fx-background-color: #006fb7;" text="Добавить" textFill="WHITE" GridPane.columnIndex="2">
+               <GridPane.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </GridPane.margin>
+            </JFXButton>
+            <JFXButton fx:id="delete_button" onAction="#deleteRow" layoutX="422.0" layoutY="20.0" maxWidth="375.0" prefHeight="27.0" prefWidth="170.0" style="-fx-background-color: #006fb7;" text="Удалить запись" textFill="WHITE" GridPane.columnIndex="3">
+               <GridPane.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </GridPane.margin>
+            </JFXButton>
+         </children>
+         <padding>
+            <Insets bottom="16.0" left="50.0" right="50.0" top="16.0" />
+         </padding>
+      </GridPane>
+   </bottom>
 </BorderPane>

@@ -15,6 +15,10 @@ public class AutoShops extends RecursiveTreeObject<AutoShops> {
         this.name = new SimpleStringProperty(name);
     }
 
+    public AutoShops(String address, String name) {
+        this(-1, address, name);
+    }
+
     public int getShop_number() {
         return shop_number.get();
     }
