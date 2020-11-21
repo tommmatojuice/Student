@@ -13,12 +13,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import util.MysqlDatabase;
 
 public class Controller{
 
@@ -48,10 +46,10 @@ public class Controller{
             String login = main_login.getText().trim();
             String password = main_pass.getText().trim();
             System.out.println(login + " " + password);
-            if(login.length()>0 && password.length()>0){
+            if(main_login.getText().trim().length()>0 && main_pass.getText().trim().length()>0){
                 checkAuth(login, password);
             } else {
-                helper.showMessage("Ошибка", "Введите логин и пароль!");
+                helper.showErrorMessage("Ошибка", "Введите логин и пароль!");
             }
         });
     }
@@ -67,10 +65,9 @@ public class Controller{
                 String dbpass = resultSet.getString("password");
                 System.out.println(dblogin + " " + dbpass);
                 if(dblogin.equals(login) && dbpass.equals(pass)){
-//                    System.out.println();
                     main_enter_button.getScene().getWindow().hide();
                     try {
-                        helper.openWindow("/sample/autoshops.fxml");
+                        helper.openWindow("autoshops.fxml");
                     } catch (IOException exception) {
                         exception.printStackTrace();
                     }
@@ -78,7 +75,7 @@ public class Controller{
                     break;
                 }
             }
-            if (authFlag==0) helper.showMessage("Ошибка", "Неверный логин или пароль!");
+            if (authFlag==0) helper.showErrorMessage("Ошибка", "Неверный логин или пароль!");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

@@ -22,7 +22,15 @@ public class SystemHelper
         return mysqlDatabase.getConnection();
     }
 
-    public void showMessage(String title, String message)
+    public void openWindow(String path) throws IOException
+    {
+        Parent parent = FXMLLoader.load(getClass().getResource(path));
+        Stage stage = new Stage();
+        stage.setScene(new Scene(parent));
+        stage.show();
+    }
+
+    public void showErrorMessage(String title, String message)
     {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -31,11 +39,12 @@ public class SystemHelper
         alert.showAndWait();
     }
 
-    public void openWindow(String path) throws IOException
+    public Alert showConfirmMessage(String title, String header, String message)
     {
-        Parent parent = FXMLLoader.load(getClass().getResource(path));
-        Stage stage = new Stage();
-        stage.setScene(new Scene(parent));
-        stage.show();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(message);
+        return alert;
     }
 }
