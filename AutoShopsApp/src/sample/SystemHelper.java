@@ -1,6 +1,5 @@
 package sample;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,7 +9,6 @@ import util.MysqlDatabase;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class SystemHelper
@@ -22,11 +20,13 @@ public class SystemHelper
         return mysqlDatabase.getConnection();
     }
 
-    public void openWindow(String path) throws IOException
+    public void openWindow(String path, double width, double height) throws IOException
     {
         Parent parent = FXMLLoader.load(getClass().getResource(path));
         Stage stage = new Stage();
         stage.setScene(new Scene(parent));
+        stage.setWidth(width+20);
+        stage.setHeight(height+20);
         stage.show();
     }
 

@@ -1,5 +1,6 @@
 package sample;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -8,10 +9,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.AnchorPane;
 
 public class AutoshopsController
 {
@@ -28,38 +30,18 @@ public class AutoshopsController
     private JFXButton add_button;
 
     @FXML
-    private AnchorPane main_scene;
+    private JFXButton out_button;
+
+    @FXML
+    private JFXButton masters_button;
 
     private final AutoShopsManager autoShopsManager = new AutoShopsManager();
-    private final ObservableList<AutoShops> autoShopsList = FXCollections.observableArrayList();
-    private SystemHelper helper = new SystemHelper();
+    private SystemHelper systemHelper = new SystemHelper();
 
     @FXML
     void initialize() throws SQLException {
         setTable();
-        add_button.setOnAction(event -> {
-            addAutoShop();
-        });
-    }
-
-    @FXML
-    private void deleteRow(ActionEvent event) {
-        if(event.isConsumed()){
-            AutoShops autoShop = auto_table.getSelectionModel().getSelectedItem();
-            Optional<ButtonType> option = helper.showConfirmMessage("Удалить запись", "Вы действительно хотите удалить запись?", null).showAndWait();
-            if (option.get() == ButtonType.OK) {
-                try {
-                    autoShopsManager.deleteByID(autoShop.getShop_number());
-                    auto_table.getItems().removeAll(auto_table.getSelectionModel().getSelectedItem());
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-                System.out.println("DELETE!");
-            }
-        } else {
-            helper.showErrorMessage("Ошибка", "Выберите строку!");
-        }
-
+        initButtons();
     }
 
     void setTable() throws SQLException {
@@ -93,8 +75,51 @@ public class AutoshopsController
         });
     }
 
+    private void initButtons(){
+        add_button.setOnAction(event -> {
+            addAutoShop();
+        });
+
+        out_button.setOnAction(event -> {
+            try {
+                out_button.getScene().getWindow().hide();
+                systemHelper.openWindow("sample.fxml",  out_button.getScene().getWidth(), out_button.getScene().getHeight());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        masters_button.setOnAction(event -> {
+            try {
+                masters_button.getScene().getWindow().hide();
+                systemHelper.openWindow("masters.fxml",  masters_button.getScene().getWidth(), masters_button.getScene().getHeight());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        });
+    }
+
+    @FXML
+    private void deleteRow() {
+        AutoShops autoShop = auto_table.getSelectionModel().getSelectedItem();
+        if(autoShop != null){
+            Optional<ButtonType> option = systemHelper.showConfirmMessage("Удалить запись", "Вы действительно хотите удалить запись?", null).showAndWait();
+            if (option.get() == ButtonType.OK) {
+                try {
+                    autoShopsManager.deleteByID(autoShop.getShop_number());
+                    auto_table.getItems().removeAll(auto_table.getSelectionModel().getSelectedItem());
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+                System.out.println("DELETE!");
+            }
+        } else {
+            systemHelper.showErrorMessage("Ошибка", "Выберите запись!");
+        }
+    }
+
     void changeCheck(AutoShops autoShop, String message){
-        Optional<ButtonType> option = helper.showConfirmMessage("Изменить поле", "Вы действительно хотите изменить поле?", message).showAndWait();
+        Optional<ButtonType> option = systemHelper.showConfirmMessage("Изменить поле", "Вы действительно хотите изменить поле?", message).showAndWait();
         if (option.get() == ButtonType.OK) {
             try {
                 System.out.println(autoShopsManager.update(autoShop));
@@ -113,7 +138,7 @@ public class AutoshopsController
 
     void addAutoShop() {
         if(!adress_enter.getText().isEmpty() && !name_enter.getText().isEmpty()){
-            Optional<ButtonType> option = helper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Автомастерская").showAndWait();
+            Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Автомастерская").showAndWait();
             if (option.get() == ButtonType.OK) {
                 try {
                     autoShopsManager.add(new AutoShops(adress_enter.getText(), name_enter.getText()));
@@ -124,8 +149,7 @@ public class AutoshopsController
                 System.out.println("Add new!");
             }
         } else {
-            helper.showErrorMessage("Ошибка", "Введите данные!");
+            systemHelper.showErrorMessage("Ошибка", "Введите данные!");
         }
-
     }
 }

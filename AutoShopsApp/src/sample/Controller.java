@@ -12,11 +12,11 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import sample.SystemHelper;
 
 public class Controller{
 
@@ -67,7 +67,7 @@ public class Controller{
                 if(dblogin.equals(login) && dbpass.equals(pass)){
                     main_enter_button.getScene().getWindow().hide();
                     try {
-                        helper.openWindow("autoshops.fxml");
+                        helper.openWindow("/sample/autoshops.fxml", main_enter_button.getScene().getWidth(), main_enter_button.getScene().getHeight());
                     } catch (IOException exception) {
                         exception.printStackTrace();
                     }

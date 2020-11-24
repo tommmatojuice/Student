@@ -57,10 +57,6 @@ public class AutoShops extends RecursiveTreeObject<AutoShops> {
 
     @Override
     public String toString() {
-        return "AutoShops{" +
-                "shop_number=" + shop_number +
-                ", address=" + address +
-                ", name=" + name +
-                '}';
+        return this.name.get();
     }
 }

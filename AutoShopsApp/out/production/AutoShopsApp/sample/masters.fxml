@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -13,70 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.AutoshopsController">
-   <center>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER">
-         <center>
-            <TableView fx:id="auto_table" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <BorderPane.margin>
-                  <Insets left="20.0" />
-               </BorderPane.margin>
-            </TableView>
-         </center>
-         <bottom>
-            <GridPane style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER">
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <TextField fx:id="adress_enter" promptText="Адресс">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <TextField fx:id="name_enter" promptText="Название" GridPane.columnIndex="1">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <JFXButton fx:id="add_button" layoutX="592.0" layoutY="20.0" maxWidth="375.0" prefHeight="27.0" prefWidth="170.0" style="-fx-background-color: #006fb7;" text="Добавить" textFill="WHITE" GridPane.columnIndex="2">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </JFXButton>
-                  <JFXButton fx:id="delete_button" layoutX="422.0" layoutY="20.0" maxWidth="375.0" onAction="#deleteRow" prefHeight="27.0" prefWidth="170.0" style="-fx-background-color: #006fb7;" text="Удалить запись" textFill="WHITE" GridPane.columnIndex="3">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </JFXButton>
-               </children>
-               <padding>
-                  <Insets bottom="16.0" left="50.0" right="50.0" top="16.0" />
-               </padding>
-               <BorderPane.margin>
-                  <Insets left="20.0" right="20.0" />
-               </BorderPane.margin>
-            </GridPane>
-         </bottom>
-         <right>
-            <AnchorPane prefHeight="483.0" prefWidth="20.0" style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER" />
-         </right>
-         <top>
-            <AnchorPane prefHeight="56.0" prefWidth="579.0" BorderPane.alignment="CENTER">
-               <children>
-                  <JFXButton fx:id="out_button" layoutX="467.0" layoutY="14.0" maxWidth="375.0" prefHeight="27.0" prefWidth="90.0" style="-fx-background-color: #006fb7;" text="Выход" textFill="WHITE" AnchorPane.rightAnchor="21.727255778667995" />
-                  <Label layoutX="369.0" layoutY="19.0" text="Пользователь" AnchorPane.rightAnchor="131.94543717313468" />
-               </children>
-            </AnchorPane>
-         </top>
-      </BorderPane>
-   </center>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.MastersController">
    <left>
       <Pane prefHeight="540.0" prefWidth="220.0" style="-fx-background-color: #006fb7;" BorderPane.alignment="CENTER">
          <children>
@@ -138,4 +76,70 @@
          </children>
       </Pane>
    </left>
+   <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER">
+         <center>
+            <TableView fx:id="masters_table" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="20.0" />
+               </BorderPane.margin>
+            </TableView>
+         </center>
+         <right>
+            <AnchorPane prefHeight="483.0" prefWidth="20.0" style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER" />
+         </right>
+         <top>
+            <AnchorPane prefHeight="56.0" prefWidth="579.0" BorderPane.alignment="CENTER">
+               <children>
+                  <JFXButton fx:id="out_button" layoutX="467.0" layoutY="14.0" maxWidth="375.0" prefHeight="27.0" prefWidth="90.0" style="-fx-background-color: #006fb7;" text="Выход" textFill="WHITE" AnchorPane.rightAnchor="21.727255778667995" />
+                  <Label layoutX="369.0" layoutY="19.0" text="Пользователь" AnchorPane.rightAnchor="131.94543717313468" />
+               </children>
+            </AnchorPane>
+         </top>
+         <bottom>
+            <GridPane style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <TextField fx:id="name_enter" promptText="ФИО">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <TextField fx:id="phone_enter" promptText="Телефон" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <JFXButton fx:id="add_button" layoutX="592.0" layoutY="20.0" maxWidth="375.0" prefHeight="27.0" prefWidth="170.0" style="-fx-background-color: #006fb7;" text="Добавить" textFill="WHITE" GridPane.columnIndex="3">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                  </JFXButton>
+                  <JFXButton fx:id="delete_button" layoutX="422.0" layoutY="20.0" maxWidth="375.0" onAction="#deleteRow" prefHeight="27.0" prefWidth="170.0" style="-fx-background-color: #006fb7;" text="Удалить запись" textFill="WHITE" GridPane.columnIndex="4">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                  </JFXButton>
+                  <ComboBox fx:id="shop_enter" maxWidth="375.0" prefWidth="170.0" promptText="Автомастерская" GridPane.columnIndex="2">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                  </ComboBox>
+               </children>
+               <padding>
+                  <Insets bottom="16.0" left="50.0" right="50.0" top="16.0" />
+               </padding>
+            </GridPane>
+         </bottom>
+      </BorderPane>
+   </center>
 </BorderPane>
