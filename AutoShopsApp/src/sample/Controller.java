@@ -4,28 +4,17 @@ import com.jfoenix.controls.JFXButton;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import sample.SystemHelper;
 
 public class Controller{
-
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
-
     @FXML
     private PasswordField main_pass;
 
@@ -34,9 +23,6 @@ public class Controller{
 
     @FXML
     private JFXButton main_enter_button;
-
-    @FXML
-    private ImageView main_image;
 
     private SystemHelper helper = new SystemHelper();
 
@@ -56,26 +42,29 @@ public class Controller{
 
     public void checkAuth(String login, String pass){
         try(Connection c = helper.getConnection()) {
-            String sql = "SELECT * FROM users";
-            Statement statement = c.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            int authFlag = 0;
-            while (resultSet.next()){
-                String dblogin = resultSet.getString("login");
-                String dbpass = resultSet.getString("password");
-                System.out.println(dblogin + " " + dbpass);
-                if(dblogin.equals(login) && dbpass.equals(pass)){
-                    main_enter_button.getScene().getWindow().hide();
-                    try {
-                        helper.openWindow("/sample/autoshops.fxml", main_enter_button.getScene().getWidth(), main_enter_button.getScene().getHeight());
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
-                    }
-                    authFlag = 1;
-                    break;
+            String sql = "SELECT name FROM users where login=? AND password=?";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setString(1, login);
+            statement.setString(2, pass);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                helper.setUser(resultSet.getString("name"));
+                main_enter_button.getScene().getWindow().hide();
+                try {
+                    FXMLLoader loader = helper.openWindow("/sample/autoshops.fxml", main_enter_button.getScene().getWidth(), main_enter_button.getScene().getHeight());
+//                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/autoshops.fxml"));
+//                    Parent root = loader.load();
+//                    Stage stage = new Stage();
+//                    stage.setScene(new Scene(root));
+                    AutoshopsController controllerEditBook = loader.getController(); //получаем контроллер для второй формы
+                    controllerEditBook.setUserLabel(resultSet.getString("name")); // передаем необходимые параметры
+//                    stage.show();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
                 }
+            } else {
+                helper.showErrorMessage("Ошибка", "Неверный логин или пароль!");
             }
-            if (authFlag==0) helper.showErrorMessage("Ошибка", "Неверный логин или пароль!");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

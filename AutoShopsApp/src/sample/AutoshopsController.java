@@ -30,10 +30,46 @@ public class AutoshopsController
     private JFXButton add_button;
 
     @FXML
+    private JFXButton delete_button;
+
+    @FXML
     private JFXButton out_button;
 
     @FXML
+    private Label user_label;
+
+    @FXML
+    private JFXButton shops_button;
+
+    @FXML
     private JFXButton masters_button;
+
+    @FXML
+    private JFXButton model_button;
+
+    @FXML
+    private JFXButton cars_button;
+
+    @FXML
+    private JFXButton client_button;
+
+    @FXML
+    private JFXButton consum_button;
+
+    @FXML
+    private JFXButton work_button;
+
+    @FXML
+    private JFXButton cintract_button;
+
+    @FXML
+    private JFXButton service_button;
+
+    @FXML
+    private JFXButton math_button;
+
+    @FXML
+    private JFXButton users_button;
 
     private final AutoShopsManager autoShopsManager = new AutoShopsManager();
     private SystemHelper systemHelper = new SystemHelper();
@@ -42,6 +78,10 @@ public class AutoshopsController
     void initialize() throws SQLException {
         setTable();
         initButtons();
+    }
+
+    void setUserLabel(String name){
+        user_label.setText(name);
     }
 
     void setTable() throws SQLException {
