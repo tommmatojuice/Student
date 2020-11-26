@@ -5,10 +5,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 import javafx.scene.control.ComboBox;
@@ -16,6 +18,15 @@ import javafx.scene.control.ComboBox;
 public class MastersController {
     @FXML
     private TableView<Masters> masters_table = new TableView<>();
+
+    @FXML
+    private ComboBox<AutoShops> shop_enter = new ComboBox<>();
+
+    @FXML
+    private JFXButton out_button;
+
+    @FXML
+    private Label user_label;
 
     @FXML
     private TextField name_enter;
@@ -30,26 +41,53 @@ public class MastersController {
     private JFXButton delete_button;
 
     @FXML
-    private ComboBox<AutoShops> shop_enter = new ComboBox<>();
+    private JFXButton shops_button;
 
     @FXML
     private JFXButton masters_button;
 
     @FXML
-    private JFXButton auto_shops_button;
+    private JFXButton model_button;
 
     @FXML
-    private JFXButton out_button;
+    private JFXButton cars_button;
+
+    @FXML
+    private JFXButton client_button;
+
+    @FXML
+    private JFXButton consum_button;
+
+    @FXML
+    private JFXButton work_button;
+
+    @FXML
+    private JFXButton cintract_button;
+
+    @FXML
+    private JFXButton service_button;
+
+    @FXML
+    private JFXButton math_button;
+
+    @FXML
+    private JFXButton users_button;
 
     private final MastersManager mastersManager = new MastersManager();
     private final AutoShopsManager autoShopsManager = new AutoShopsManager();
     private SystemHelper systemHelper = new SystemHelper();
+    private String userName;
 
     @FXML
     void initialize() throws SQLException {
-        shop_enter.setItems(autoShopsManager.getAll());
         setTable();
         initButtons();
+        shop_enter.setItems(autoShopsManager.getAll());
+    }
+
+    void setUserLabel(String name){
+        userName = name;
+        user_label.setText(name);
     }
 
     void setTable() throws SQLException {
@@ -89,6 +127,37 @@ public class MastersController {
     public void initButtons(){
         add_button.setOnAction(event -> {
             addMaster();
+        });
+
+        out_button.setOnAction(event -> {
+            try {
+                out_button.getScene().getWindow().hide();
+                systemHelper.openWindow("sample.fxml",  out_button.getScene().getWidth());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        shops_button.setOnAction(event -> {
+            try {
+                shops_button.getScene().getWindow().hide();
+                FXMLLoader loader = systemHelper.openWindow("autoshops.fxml",  masters_button.getScene().getWidth());
+                AutoshopsController controllerEditBook = loader.getController();
+                controllerEditBook.setUserLabel(userName);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        service_button.setOnAction(event -> {
+            service_button.getScene().getWindow().hide();
+            try {
+                FXMLLoader loader = systemHelper.openWindow("services.fxml", service_button.getScene().getWidth());
+                ServicesController controller = loader.getController();
+                controller.setUserName(userName);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
         });
     }
 
@@ -131,15 +200,19 @@ public class MastersController {
 
     void addMaster() {
         if(!name_enter.getText().isEmpty() && !phone_enter.getText().isEmpty() && shop_enter.getValue() != null){
-            Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Мастер").showAndWait();
-            if (option.get() == ButtonType.OK) {
-                try {
-                    mastersManager.add(new Masters(name_enter.getText(), phone_enter.getText(), shop_enter.getValue().getShop_number()));
-                    masters_table.setItems(mastersManager.getAll());
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+            if (systemHelper.phoneCheck(phone_enter.getText())){
+                Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Мастер").showAndWait();
+                if (option.get() == ButtonType.OK) {
+                    try {
+                        mastersManager.add(new Masters(name_enter.getText(), phone_enter.getText(), shop_enter.getValue().getShop_number()));
+                        masters_table.setItems(mastersManager.getAll());
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+                    System.out.println("Add new!");
                 }
-                System.out.println("Add new!");
+            } else {
+                systemHelper.showErrorMessage("Ошибка", "Неверный формат телефона!");
             }
         } else {
             systemHelper.showErrorMessage("Ошибка", "Введите данные!");

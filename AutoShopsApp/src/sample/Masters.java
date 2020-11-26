@@ -25,7 +25,6 @@ public class Masters
     private SimpleIntegerProperty masterId;
     private SimpleStringProperty name;
     private SimpleStringProperty phone;
-//    private SimpleIntegerProperty autoShop;
     private AutoShops autoShop;
     private ComboBox<AutoShops> autoShops;
 
@@ -34,7 +33,6 @@ public class Masters
         this.name = new SimpleStringProperty(name);
         this.phone = new SimpleStringProperty(phone);
         this.autoShops = new ComboBox<>(autoShopsManager.getAll());
-//        this.autoShop = new SimpleIntegerProperty(autoShop);
 
         for(AutoShops a: autoShops.getItems()){
             if (a.getShop_number() == autoShop)
@@ -52,13 +50,10 @@ public class Masters
         @Override
         public void changed(ObservableValue<? extends AutoShops> observable, AutoShops oldValue, AutoShops newValue) {
             if (newValue != null && newValue != autoShop) {
-                System.out.println(oldValue.getShop_number());
-                System.out.println(newValue.getShop_number());
                 Optional<ButtonType> option = systemHelper.showConfirmMessage("Изменить поле", "Вы действительно хотите изменить поле?", "Автомастерская").showAndWait();
                 if (option.get() == ButtonType.OK) {
                     try {
                         autoShop = newValue;
-                        System.out.println(newValue.getName());
                         mastersManager.update(new Masters(getMasterId(), getName(), getPhone(), getAutoShop().getShop_number()));
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();

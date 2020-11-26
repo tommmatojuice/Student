@@ -21,6 +21,7 @@ public class Main extends Application
         primaryStage.setTitle("Conner Brothers Auto Shops");
         primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.show();
+        primaryStage.getIcons().add(new Image("asseats/logo.png"));
         primaryStage.setResizable(false);
     }
 

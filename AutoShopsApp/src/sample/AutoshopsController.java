@@ -73,6 +73,7 @@ public class AutoshopsController
 
     private final AutoShopsManager autoShopsManager = new AutoShopsManager();
     private SystemHelper systemHelper = new SystemHelper();
+    private String userName;
 
     @FXML
     void initialize() throws SQLException {
@@ -81,17 +82,16 @@ public class AutoshopsController
     }
 
     void setUserLabel(String name){
+        userName = name;
         user_label.setText(name);
     }
 
     void setTable() throws SQLException {
         TableColumn<AutoShops, String> addressColumn = new TableColumn<>("Адрес");
-        addressColumn.setMinWidth(350);
         addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
         addressColumn.setCellFactory(TextFieldTableCell. forTableColumn());
 
         TableColumn<AutoShops, String> nameColumn = new TableColumn<>("Название");
-        nameColumn.setMinWidth(350);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         nameColumn.setCellFactory(TextFieldTableCell. forTableColumn());
 
@@ -123,7 +123,7 @@ public class AutoshopsController
         out_button.setOnAction(event -> {
             try {
                 out_button.getScene().getWindow().hide();
-                systemHelper.openWindow("sample.fxml",  out_button.getScene().getWidth(), out_button.getScene().getHeight());
+                systemHelper.openWindow("sample.fxml",  out_button.getScene().getWidth());
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
@@ -132,7 +132,20 @@ public class AutoshopsController
         masters_button.setOnAction(event -> {
             try {
                 masters_button.getScene().getWindow().hide();
-                systemHelper.openWindow("masters.fxml",  masters_button.getScene().getWidth(), masters_button.getScene().getHeight());
+                FXMLLoader loader = systemHelper.openWindow("masters.fxml",  masters_button.getScene().getWidth());
+                MastersController controllerEditBook = loader.getController();
+                controllerEditBook.setUserLabel(userName);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        service_button.setOnAction(event -> {
+            try {
+                service_button.getScene().getWindow().hide();
+                FXMLLoader loader = systemHelper.openWindow("services.fxml", service_button.getScene().getWidth());
+                ServicesController controller = loader.getController();
+                controller.setUserName(userName);
             } catch (IOException exception) {
                 exception.printStackTrace();
             }

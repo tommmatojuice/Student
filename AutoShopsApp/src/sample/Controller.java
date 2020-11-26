@@ -51,14 +51,9 @@ public class Controller{
                 helper.setUser(resultSet.getString("name"));
                 main_enter_button.getScene().getWindow().hide();
                 try {
-                    FXMLLoader loader = helper.openWindow("/sample/autoshops.fxml", main_enter_button.getScene().getWidth(), main_enter_button.getScene().getHeight());
-//                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/autoshops.fxml"));
-//                    Parent root = loader.load();
-//                    Stage stage = new Stage();
-//                    stage.setScene(new Scene(root));
-                    AutoshopsController controllerEditBook = loader.getController(); //получаем контроллер для второй формы
-                    controllerEditBook.setUserLabel(resultSet.getString("name")); // передаем необходимые параметры
-//                    stage.show();
+                    FXMLLoader loader = helper.openWindow("/sample/autoshops.fxml", main_enter_button.getScene().getWidth());
+                    AutoshopsController controllerEditBook = loader.getController();
+                    controllerEditBook.setUserLabel(resultSet.getString("name"));
                 } catch (IOException exception) {
                     exception.printStackTrace();
                 }

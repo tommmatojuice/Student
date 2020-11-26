@@ -11,6 +11,8 @@ import util.MysqlDatabase;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SystemHelper
 {
@@ -21,34 +23,25 @@ public class SystemHelper
         return mysqlDatabase.getConnection();
     }
 
-    public FXMLLoader openWindow(String path, double width, double height) throws IOException
+    public FXMLLoader openWindow(String path, double width) throws IOException
     {
-//        Parent parent = FXMLLoader.load(getClass().getResource(path));
-//        Stage stage = new Stage();
-//        stage.setScene(new Scene(parent));
-//        stage.setWidth(width+20);
-//        stage.setHeight(height+20);
-//        stage.setTitle("Conner Brothers auto shops");
-////        stage.getIcons().add(new Image("/asseats/logo.png"));
-//        stage.show();
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample/autoshops.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
         Parent root = loader.load();
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
-        stage.setWidth(width+20);
-        stage.setHeight(height+20);
+        if (path != "sample.fxml"){
+            if (width<1000){
+                stage.setWidth(800);
+                stage.setHeight(650);
+            } else {
+                stage.setWidth(1700);
+                stage.setHeight(920);
+            }
+        }
+//        stage.getIcons().add(new Image("sample/asseats/logo.png"));
         stage.setTitle("Conner Brothers auto shops");
         stage.show();
         return loader;
-
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-//        Parent root = loader.load();
-//        Stage stage = new Stage();
-//        stage.setScene(new Scene(root));
-//        ControllerClass controllerEditBook = loader.getController(); //получаем контроллер для второй формы
-//        controllerEditBook.someMethod(someParameters); // передаем необходимые параметры
-//        Main.primaryStage.show();
     }
 
     public void showErrorMessage(String title, String message)
@@ -75,5 +68,17 @@ public class SystemHelper
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public boolean phoneCheck(String phone){
+        Pattern pattern = Pattern.compile("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$");
+        Matcher matcher = pattern.matcher(phone);
+//        while (matcher.find()) {
+//            int start=matcher.start();
+//            int end=matcher.end();
+//            System.out.println("Найдено совпадение " + phone.substring(start,end) + " с "+ start + " по " + (end-1) + " позицию");
+//        }
+//        System.out.println(text);
+        return matcher.find();
     }
 }
