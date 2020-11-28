@@ -50,7 +50,7 @@ public class ServicesManager
     {
         try(Connection c = systemHelper.getConnection())
         {
-            String sql = "UPDATE services SET type_of_repair=?, price=? WHERE service_id(3)=?";
+            String sql = "UPDATE services SET type_of_repair=?, price=? WHERE `services`.`service_id(3)`=?";
             PreparedStatement statement = c.prepareStatement(sql);
 
             statement.setString(1, services.getType());
@@ -61,12 +61,12 @@ public class ServicesManager
         }
     }
 
-    private void deleteById(int id) throws SQLException {
+    public void deleteById(int id) throws SQLException {
         try(Connection c = systemHelper.getConnection()) {
-            String sql = "DELETE FROM services WHERE service_id(3)=?";
+            String sql = "DELETE FROM `services` WHERE `services`.`service_id(3)`=?";
             PreparedStatement statement = c.prepareStatement(sql);
             statement.setInt(1, id);
-            statement.executeUpdate();
+            statement.execute();
         }
     }
 }

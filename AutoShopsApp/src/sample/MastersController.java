@@ -88,6 +88,8 @@ public class MastersController {
     void setUserLabel(String name){
         userName = name;
         user_label.setText(name);
+        systemHelper.initMenu(name, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+                consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
     void setTable() throws SQLException {
@@ -118,9 +120,17 @@ public class MastersController {
         phoneColumn.setOnEditCommit((TableColumn.CellEditEvent<Masters, String> event) -> {
             TablePosition<Masters, String> pos = event.getTablePosition();
             Masters masters = event.getTableView().getItems().get(pos.getRow());
-            masters.setPhone(event.getNewValue());
-            System.out.println(event.getNewValue());
-            changeCheck(masters, "Телефон");
+            if(systemHelper.phoneCheck(event.getNewValue())){
+                masters.setPhone(event.getNewValue());
+                changeCheck(masters, "Телефон");
+            } else {
+                systemHelper.showErrorMessage("Ошибка", "Неверный формат телефона!");
+                try {
+                    masters_table.setItems(mastersManager.getAll());
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
         });
     }
 
@@ -129,36 +139,39 @@ public class MastersController {
             addMaster();
         });
 
-        out_button.setOnAction(event -> {
-            try {
-                out_button.getScene().getWindow().hide();
-                systemHelper.openWindow("sample.fxml",  out_button.getScene().getWidth());
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        });
+//        out_button.setOnAction(event -> {
+//            try {
+//                out_button.getScene().getWindow().hide();
+//                systemHelper.openWindow("sample.fxml",  out_button.getScene().getWidth());
+//            } catch (IOException exception) {
+//                exception.printStackTrace();
+//            }
+//        });
+//
+//        shops_button.setOnAction(event -> {
+//            try {
+//                shops_button.getScene().getWindow().hide();
+//                FXMLLoader loader = systemHelper.openWindow("autoshops.fxml",  masters_button.getScene().getWidth());
+//                AutoshopsController controllerEditBook = loader.getController();
+//                controllerEditBook.setUserLabel(userName);
+//            } catch (IOException exception) {
+//                exception.printStackTrace();
+//            }
+//        });
+//
+//        service_button.setOnAction(event -> {
+//            service_button.getScene().getWindow().hide();
+//            try {
+//                FXMLLoader loader = systemHelper.openWindow("services.fxml", service_button.getScene().getWidth());
+//                ServicesController controller = loader.getController();
+//                controller.setUserName(userName);
+//            } catch (IOException exception) {
+//                exception.printStackTrace();
+//            }
+//        });
 
-        shops_button.setOnAction(event -> {
-            try {
-                shops_button.getScene().getWindow().hide();
-                FXMLLoader loader = systemHelper.openWindow("autoshops.fxml",  masters_button.getScene().getWidth());
-                AutoshopsController controllerEditBook = loader.getController();
-                controllerEditBook.setUserLabel(userName);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        });
-
-        service_button.setOnAction(event -> {
-            service_button.getScene().getWindow().hide();
-            try {
-                FXMLLoader loader = systemHelper.openWindow("services.fxml", service_button.getScene().getWidth());
-                ServicesController controller = loader.getController();
-                controller.setUserName(userName);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        });
+//        systemHelper.initMenu(userName, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+//                consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
     @FXML

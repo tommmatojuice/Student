@@ -37,12 +37,12 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <TextField fx:id="adress_enter" promptText="Тип ремонта">
+                  <TextField fx:id="type_enter" promptText="Тип ремонта">
                      <GridPane.margin>
                         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField fx:id="name_enter" promptText="Стоимость" GridPane.columnIndex="1">
+                  <TextField fx:id="price_enter" promptText="Стоимость" GridPane.columnIndex="1">
                      <GridPane.margin>
                         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                      </GridPane.margin>

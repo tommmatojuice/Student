@@ -84,6 +84,9 @@ public class AutoshopsController
     void setUserLabel(String name){
         userName = name;
         user_label.setText(name);
+        System.out.println(userName);
+        systemHelper.initMenu(name, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+                consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
     void setTable() throws SQLException {
@@ -120,36 +123,9 @@ public class AutoshopsController
             addAutoShop();
         });
 
-        out_button.setOnAction(event -> {
-            try {
-                out_button.getScene().getWindow().hide();
-                systemHelper.openWindow("sample.fxml",  out_button.getScene().getWidth());
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        });
-
-        masters_button.setOnAction(event -> {
-            try {
-                masters_button.getScene().getWindow().hide();
-                FXMLLoader loader = systemHelper.openWindow("masters.fxml",  masters_button.getScene().getWidth());
-                MastersController controllerEditBook = loader.getController();
-                controllerEditBook.setUserLabel(userName);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        });
-
-        service_button.setOnAction(event -> {
-            try {
-                service_button.getScene().getWindow().hide();
-                FXMLLoader loader = systemHelper.openWindow("services.fxml", service_button.getScene().getWidth());
-                ServicesController controller = loader.getController();
-                controller.setUserName(userName);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        });
+//        System.out.println(userName);
+//        systemHelper.initMenu(userName, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+//                consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
     @FXML
