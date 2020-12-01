@@ -72,11 +72,6 @@ public class CarModel
 
     @Override
     public String toString() {
-        return "CarModel{" +
-                "modelId=" + modelId +
-                ", name=" + name +
-                ", engineCapacity=" + engineCapacity +
-                ", enginePower=" + enginePower +
-                '}';
+        return name.get();
     }
 }

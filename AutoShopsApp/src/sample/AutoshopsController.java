@@ -84,7 +84,6 @@ public class AutoshopsController
     void setUserLabel(String name){
         userName = name;
         user_label.setText(name);
-        System.out.println(userName);
         systemHelper.initMenu(name, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }

@@ -3,9 +3,9 @@ package sample;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.SingleSelectionModel;
 
-public class Customer
-{
+public class Customer extends SingleSelectionModel<Customer> {
     private SimpleIntegerProperty id;
     private SimpleStringProperty fullName;
     private SimpleStringProperty address;
@@ -86,12 +86,16 @@ public class Customer
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "id=" + id +
-                ", fullName=" + fullName +
-                ", address=" + address +
-                ", phone=" + phone +
-                ", passport=" + passport +
-                '}';
+        return fullName.get() + " (" + passport.get() + ")";
+    }
+
+    @Override
+    protected Customer getModelItem(int index) {
+        return null;
+    }
+
+    @Override
+    protected int getItemCount() {
+        return 0;
     }
 }

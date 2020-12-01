@@ -5,10 +5,12 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -88,14 +90,14 @@ public class CustomerController {
     }
 
     @FXML
-    private void deleteRow(ActionEvent event) {
+    private void deleteRow() {
         Customer customer = customers_table.getSelectionModel().getSelectedItem();
         if (customer != null){
             Optional<ButtonType> option = systemHelper.showConfirmMessage("Удалить запись", "Вы действительно хотите удалить запись?", null).showAndWait();
             if (option.get() == ButtonType.OK) {
                 try {
                     customerManager.deleteById(customer.getId());
-                    customers_table.getItems().removeAll(customers_table.getSelectionModel().getSelectedItem());
+                    searchTable();
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
@@ -117,9 +119,6 @@ public class CustomerController {
         add_button.setOnAction(event -> {
             addCustomer();
         });
-
-//        systemHelper.initMenu(userName, out_button, shops_button, masters_button, model_button, cars_button, client_button,
-//                consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
     private void setTable() throws SQLException {
@@ -217,9 +216,10 @@ public class CustomerController {
                     Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Клиент").showAndWait();
                     if (option.get() == ButtonType.OK) {
                         try {
-                            customerManager.add(new Customer(name_enter.getText(), address_enter.getText(), phone_enter.getText(), passport_enter.getText()));
+                            Customer customer = customerManager.add(new Customer(name_enter.getText(), address_enter.getText(), phone_enter.getText(), passport_enter.getText()));
                             customers_table.setItems(customerManager.getAll());
-                        } catch (SQLException throwables) {
+                            goToCars(customer);
+                        } catch (SQLException | IOException throwables) {
                             throwables.printStackTrace();
                         }
                         System.out.println("Add new!");
@@ -251,5 +251,16 @@ public class CustomerController {
         SortedList<Customer> sortedList = new SortedList<>(filteredList);
         sortedList.comparatorProperty().bind(customers_table.comparatorProperty());
         customers_table.setItems(sortedList);
+    }
+
+    public void goToCars(Customer customer) throws IOException, SQLException {
+        Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить автомобиль", "Добавить автомобить клиента?", customer.toString()).showAndWait();
+        if (option.get() == ButtonType.OK) {
+            cars_button.getScene().getWindow().hide();
+            FXMLLoader loader = systemHelper.openWindow("cars.fxml", cars_button.getScene().getWidth());
+            CarsController controller = loader.getController();
+            controller.setUserName(userName);
+            controller.setCustomer(customer);
+        }
     }
 }

@@ -31,7 +31,7 @@ public class CustomerManager
         }
     }
 
-    public void add(Customer customer) throws SQLException {
+    public Customer add(Customer customer) throws SQLException {
         try (Connection c = systemHelper.getConnection()){
             String sql = "INSERT INTO customer(full_name, address, phone_number, passport) VALUES(?, ?, ?, ?)";
             PreparedStatement statement = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -39,11 +39,13 @@ public class CustomerManager
             statement.setString(2, customer.getAddress());
             statement.setString(3, customer.getPhone());
             statement.setString(4, customer.getPassport());
-            statement.executeUpdate();
+            statement.execute();
 
             ResultSet keys = statement.getGeneratedKeys();
-            if(keys.next())
-                return;
+            if(keys.next()){
+                customer.setId(keys.getInt(1));
+                return customer;
+            }
 
             throw new SQLException("Customer is not added!");
         }
@@ -71,6 +73,26 @@ public class CustomerManager
             PreparedStatement statement = c.prepareStatement(sql);
             statement.setInt(1, id);
             statement.executeUpdate();
+        }
+    }
+
+    public Customer getById(int id) throws SQLException {
+        try(Connection c = systemHelper.getConnection())
+        {
+            String sql = "SELECT * FROM customer WHERE id_customer=?";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                return new Customer(
+                        resultSet.getInt("id_customer"),
+                        resultSet.getString("full_name"),
+                        resultSet.getString("address"),
+                        resultSet.getString("phone_number"),
+                        resultSet.getString("passport")
+                );
+            }
+            return null;
         }
     }
 

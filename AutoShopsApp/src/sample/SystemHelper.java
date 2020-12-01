@@ -1,6 +1,7 @@
 package sample;
 
 import com.jfoenix.controls.JFXButton;
+import javafx.css.Match;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +13,7 @@ import javafx.stage.Stage;
 import util.MysqlDatabase;
 
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.regex.Matcher;
@@ -50,7 +52,6 @@ public class SystemHelper
     public void initMenu(String userName, JFXButton out_button, JFXButton shops_button, JFXButton masters_button, JFXButton model_button,
                          JFXButton cars_button, JFXButton client_button, JFXButton consum_button, JFXButton work_button,
                          JFXButton cintract_button, JFXButton service_button, JFXButton math_button, JFXButton users_button){
-        System.out.println(userName);
         out_button.setOnAction(event -> {
             try {
                 out_button.getScene().getWindow().hide();
@@ -104,6 +105,30 @@ public class SystemHelper
             CustomerController controller = loader.getController();
             controller.setUserName(userName);
         });
+
+        cars_button.setOnAction(event -> {
+            cars_button.getScene().getWindow().hide();
+            FXMLLoader loader = null;
+            try {
+                loader = this.openWindow("cars.fxml", cars_button.getScene().getWidth());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            CarsController controller = loader.getController();
+            controller.setUserName(userName);
+        });
+
+        model_button.setOnAction(event -> {
+            model_button.getScene().getWindow().hide();
+            FXMLLoader loader = null;
+            try {
+                loader = this.openWindow("car_models.fxml", model_button.getScene().getWidth());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            CarModelsController controller = loader.getController();
+            controller.setUserName(userName);
+        });
     }
 
     public void showErrorMessage(String title, String message)
@@ -133,8 +158,6 @@ public class SystemHelper
     }
 
     public boolean phoneCheck(String phone){
-//        Pattern pattern = Pattern.compile("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$");
-//        Pattern pattern = Pattern.compile("/^+([0-9]{11})$/");
         Pattern pattern = Pattern.compile("^\\+[0-9]{11}$");
         Matcher matcher = pattern.matcher(phone);
         return matcher.find();
@@ -149,6 +172,12 @@ public class SystemHelper
     public boolean passportCheck(String passport){
         Pattern pattern = Pattern.compile("^([0-9]{10})$");
         Matcher matcher = pattern.matcher(passport);
+        return matcher.find();
+    }
+
+    public boolean stateNumberCheck(String stateNumber){
+        Pattern pattern = Pattern.compile("[А-Я]\\d{3}[А-Я]{2}\\d{2,3}");
+        Matcher matcher = pattern.matcher(stateNumber);
         return matcher.find();
     }
 }
