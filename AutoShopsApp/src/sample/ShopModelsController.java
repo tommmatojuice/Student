@@ -14,67 +14,46 @@ import java.util.Optional;
 
 public class ShopModelsController {
 
-    @FXML
-    private TableView<CarModel> models_table = new TableView<>();
+    @FXML private TableView<CarModel> models_table = new TableView<>();
 
-    @FXML
-    private JFXButton add_button;
+    @FXML private JFXButton add_button;
 
-    @FXML
-    private JFXButton update_button;
+    @FXML private ComboBox<CarModel> model_enter;
 
-    @FXML
-    private ComboBox<CarModel> model_enter;
+    @FXML private JFXButton out_button;
 
-    @FXML
-    private JFXButton out_button;
+    @FXML private Label user_label;
 
-    @FXML
-    private Label user_label;
+    @FXML private Label shop_info;
 
-    @FXML
-    private Label shop_info;
+    @FXML private JFXButton shops_button;
 
-    @FXML
-    private JFXButton shops_button;
+    @FXML private JFXButton masters_button;
 
-    @FXML
-    private JFXButton masters_button;
+    @FXML private JFXButton model_button;
 
-    @FXML
-    private JFXButton model_button;
+    @FXML private JFXButton cars_button;
 
-    @FXML
-    private JFXButton cars_button;
+    @FXML private JFXButton client_button;
 
-    @FXML
-    private JFXButton client_button;
+    @FXML private JFXButton consum_button;
 
-    @FXML
-    private JFXButton consum_button;
+    @FXML private JFXButton work_button;
 
-    @FXML
-    private JFXButton work_button;
+    @FXML private JFXButton cintract_button;
 
-    @FXML
-    private JFXButton cintract_button;
+    @FXML private JFXButton service_button;
 
-    @FXML
-    private JFXButton service_button;
+    @FXML private JFXButton math_button;
 
-    @FXML
-    private JFXButton math_button;
-
-    @FXML
-    private JFXButton users_button;
+    @FXML private JFXButton users_button;
 
     private SystemHelper systemHelper = new SystemHelper();
     private CarModelManager carModelManager = new CarModelManager();
     private AutoShops autoShop;
     private String userName;
 
-    @FXML
-    void initialize(String name, AutoShops autoShop) throws SQLException {
+    @FXML void initialize(String name, AutoShops autoShop) throws SQLException {
         this.autoShop = autoShop;
         this.userName = name;
         setTable();
@@ -82,8 +61,7 @@ public class ShopModelsController {
         initElements();
     }
 
-    @FXML
-    private void deleteRow(ActionEvent event) {
+    @FXML private void deleteRow(ActionEvent event) {
         CarModel carModel = models_table.getSelectionModel().getSelectedItem();
         if (carModel != null){
             Optional<ButtonType> option = systemHelper.showConfirmMessage("Удалить запись", "Вы действительно хотите удалить запись?", null).showAndWait();
@@ -129,16 +107,6 @@ public class ShopModelsController {
         models_table.getColumns().addAll(nameColumn, modelColumn, countryColumn);
         models_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         models_table.setEditable(true);
-
-//        TableView.TableViewSelectionModel<CarModel> selectionModel = models_table.getSelectionModel();
-//        selectionModel.selectedItemProperty().addListener(new ChangeListener<CarModel>(){
-//            @Override
-//            public void changed(ObservableValue<? extends CarModel> observable, CarModel oldValue, CarModel newValue) {
-//                if(newValue != null) {
-//                    model_enter.setValue(newValue);
-//                }
-//            }
-//        });
     }
 
     private void addCarModel(){

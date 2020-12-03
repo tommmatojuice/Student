@@ -129,6 +129,18 @@ public class SystemHelper
             CarModelsController controller = loader.getController();
             controller.setUserName(userName);
         });
+
+        consum_button.setOnAction(event -> {
+            consum_button.getScene().getWindow().hide();
+            FXMLLoader loader = null;
+            try {
+                loader = this.openWindow("consumables.fxml", consum_button.getScene().getWidth());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            ConsumablesController controller = loader.getController();
+            controller.setUserName(userName);
+        });
     }
 
     public void doubleClick(String userName, AutoShops autoShop ,JFXButton button) throws SQLException {
@@ -140,7 +152,6 @@ public class SystemHelper
             exception.printStackTrace();
         }
         ShopModelsController controller = loader.getController();
-//        controller.setElements(userName, autoShop);
         controller.initialize(userName, autoShop);
     }
 
