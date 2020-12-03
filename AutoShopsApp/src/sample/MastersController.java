@@ -1,19 +1,21 @@
 package sample;
 
 import com.jfoenix.controls.JFXButton;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.regex.Matcher;
+
 import javafx.scene.control.ComboBox;
+import javafx.util.Callback;
 
 public class MastersController {
     @FXML
@@ -37,8 +39,6 @@ public class MastersController {
     @FXML
     private JFXButton add_button;
 
-    @FXML
-    private JFXButton delete_button;
 
     @FXML
     private JFXButton shops_button;
@@ -82,6 +82,16 @@ public class MastersController {
     void initialize() throws SQLException {
         setTable();
         initButtons();
+        initElements();
+    }
+
+    public void initButtons(){
+        add_button.setOnAction(event -> {
+            addMaster();
+        });
+    }
+
+    public void initElements() throws SQLException {
         shop_enter.setItems(autoShopsManager.getAll());
     }
 
@@ -101,8 +111,21 @@ public class MastersController {
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
         phoneColumn.setCellFactory(TextFieldTableCell. forTableColumn());
 
-        TableColumn<Masters, ChoiceBox<AutoShops>> shopColumn = new TableColumn<>("Автомастерская");
-        shopColumn.setCellValueFactory(new PropertyValueFactory<>("autoShops"));
+        TableColumn<Masters, AutoShops> shopColumn = new TableColumn<>("Автомастерская");
+        shopColumn.setCellValueFactory(new Callback<>() {
+            public ObservableValue<AutoShops> call(TableColumn.CellDataFeatures<Masters, AutoShops> param) {
+                Masters master = param.getValue();
+                int shopId = master.getAutoShopId();
+                AutoShops autoShop = null;
+                try {
+                    autoShop = autoShopsManager.getById(shopId);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+                return new SimpleObjectProperty<>(autoShop);
+            }
+        });
+        shopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(autoShopsManager.getAll()));
 
         masters_table.setItems(mastersManager.getAll());
         masters_table.getColumns().addAll(nameColumn, phoneColumn, shopColumn);
@@ -131,12 +154,6 @@ public class MastersController {
                     throwables.printStackTrace();
                 }
             }
-        });
-    }
-
-    public void initButtons(){
-        add_button.setOnAction(event -> {
-            addMaster();
         });
     }
 

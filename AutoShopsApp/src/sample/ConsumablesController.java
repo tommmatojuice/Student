@@ -132,7 +132,7 @@ public class ConsumablesController {
         });
         typeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(Types.values())));
 
-        TableColumn<Consumables,Units> unitColumn = new TableColumn<>("Тип");
+        TableColumn<Consumables,Units> unitColumn = new TableColumn<>("Единица измерения");
         unitColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Consumables, Units>, ObservableValue<Units>>() {
             @Override
             public ObservableValue<Units> call(TableColumn.CellDataFeatures<Consumables, Units> param) {

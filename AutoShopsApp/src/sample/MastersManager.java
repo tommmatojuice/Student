@@ -37,7 +37,7 @@ public class MastersManager
             PreparedStatement s = c.prepareStatement(sql);
             s.setString(1, masters.getName());
             s.setString(2, masters.getPhone());
-            s.setInt(3, masters.getAutoShop().getShop_number());
+            s.setInt(3, masters.getAutoShopId());
             s.setInt(4, masters.getMasterId());
             return s.executeUpdate();
         }
@@ -49,7 +49,7 @@ public class MastersManager
             PreparedStatement s = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             s.setString(1, masters.getName());
             s.setString(2, masters.getPhone());
-            s.setInt(3, masters.getAutoShop().getShop_number());
+            s.setInt(3, masters.getAutoShopId());
             s.executeUpdate();
 
             ResultSet keys = s.getGeneratedKeys();

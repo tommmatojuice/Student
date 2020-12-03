@@ -80,4 +80,22 @@ public class AutoShopsManager
             s.executeUpdate();
         }
     }
+
+    public AutoShops getById(int id) throws SQLException {
+        try(Connection c = systemHelper.getConnection())
+        {
+            String sql = "SELECT * FROM auto_repair_shops WHERE shop_number=?";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                return new  AutoShops(
+                        resultSet.getInt("shop_number"),
+                        resultSet.getString("address"),
+                        resultSet.getString("name")
+                );
+            }
+            return null;
+        }
+    }
 }
