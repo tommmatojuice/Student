@@ -2,9 +2,9 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.CarModelsController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ShopModelsController">
    <center>
       <BorderPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER">
          <center>
@@ -32,38 +32,26 @@
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <TextField fx:id="brand_enter" promptText="Марка" GridPane.columnIndex="1">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <JFXButton fx:id="add_button" layoutX="592.0" layoutY="20.0" maxWidth="450.0" prefHeight="27.0" prefWidth="200.0" style="-fx-background-color: #006fb7;" text="Добавить" textFill="WHITE" GridPane.columnIndex="4">
+                  <JFXButton fx:id="add_button" layoutX="592.0" layoutY="20.0" maxWidth="450.0" prefHeight="27.0" prefWidth="200.0" style="-fx-background-color: #006fb7;" text="Добавить" textFill="WHITE" GridPane.columnIndex="2">
                      <GridPane.margin>
                         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                      </GridPane.margin>
                   </JFXButton>
-                  <JFXButton fx:id="delete_button" layoutX="422.0" layoutY="20.0" maxWidth="450.0" onAction="#deleteRow" prefHeight="27.0" prefWidth="200.0" style="-fx-background-color: #006fb7;" text="Удалить запись" textFill="WHITE" GridPane.columnIndex="5">
+                  <JFXButton fx:id="delete_button" layoutX="422.0" layoutY="20.0" maxWidth="450.0" onAction="#deleteRow" prefHeight="27.0" prefWidth="200.0" style="-fx-background-color: #006fb7;" text="Удалить запись" textFill="WHITE" GridPane.columnIndex="3">
                      <GridPane.margin>
                         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                      </GridPane.margin>
                   </JFXButton>
-                  <TextField fx:id="model_enter" promptText="Модель" GridPane.columnIndex="2">
+                  <ComboBox fx:id="model_enter" maxWidth="450.0" prefWidth="200.0" promptText="Марка" GridPane.columnIndex="1">
                      <GridPane.margin>
                         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                      </GridPane.margin>
-                  </TextField>
-                  <TextField fx:id="country_enter" promptText="Страна производства" GridPane.columnIndex="3">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </TextField>
+                  </ComboBox>
                </children>
                <padding>
                   <Insets bottom="16.0" left="50.0" right="50.0" top="16.0" />
@@ -98,6 +86,11 @@
                         <Insets right="20.0" />
                      </GridPane.margin>
                   </AnchorPane>
+                  <Label fx:id="shop_info" text="Label">
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </Label>
                </children>
             </GridPane>
          </top>

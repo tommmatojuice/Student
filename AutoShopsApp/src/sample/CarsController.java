@@ -311,7 +311,7 @@ public class CarsController {
                         return true;
                     } else if(String.valueOf(car.getDateSheetNumber()).toLowerCase().contains(lowerCaseFilter)){
                         return true;
-                    } else if(carModelManager.getById(car.getModelId()).getName().toLowerCase().contains(lowerCaseFilter)){
+                    } else if(carModelManager.getById(car.getModelId()).toString().toLowerCase().contains(lowerCaseFilter)){
                         return true;
                     } else if(customerManager.getById(car.getCustomerId()).toString().toLowerCase().contains(lowerCaseFilter)){
                         return true;

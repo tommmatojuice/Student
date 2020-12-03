@@ -7,19 +7,19 @@ import javafx.beans.property.SimpleStringProperty;
 public class CarModel
 {
     private SimpleIntegerProperty modelId;
-    private SimpleStringProperty name;
-    private SimpleDoubleProperty engineCapacity;
-    private SimpleDoubleProperty enginePower;
+    private SimpleStringProperty brandName;
+    private SimpleStringProperty modelName;
+    private SimpleStringProperty prodCountry;
 
-    public CarModel(int modelId, String name, double engineCapacity, double enginePower) {
+    public CarModel(int modelId, String brandName, String modelName, String prodCountry) {
         this.modelId = new SimpleIntegerProperty(modelId);
-        this.name = new SimpleStringProperty(name);
-        this.engineCapacity = new SimpleDoubleProperty(engineCapacity);
-        this.enginePower = new SimpleDoubleProperty(enginePower);
+        this.brandName = new SimpleStringProperty(brandName);
+        this.modelName = new SimpleStringProperty(modelName);
+        this.prodCountry = new SimpleStringProperty(prodCountry);
     }
 
-    public CarModel(String name, double engineCapacity, double enginePower) {
-        this(-1, name, engineCapacity, enginePower);
+    public CarModel(String brandName, String modelName, String prodCountry) {
+        this(-1, brandName, modelName, prodCountry);
     }
 
     public int getModelId() {
@@ -34,44 +34,44 @@ public class CarModel
         this.modelId.set(modelId);
     }
 
-    public String getName() {
-        return name.get();
+    public String getBrandName() {
+        return brandName.get();
     }
 
-    public SimpleStringProperty nameProperty() {
-        return name;
+    public SimpleStringProperty brandNameProperty() {
+        return brandName;
     }
 
-    public void setName(String name) {
-        this.name.set(name);
+    public void setBrandName(String brandName) {
+        this.brandName.set(brandName);
     }
 
-    public double getEngineCapacity() {
-        return engineCapacity.get();
+    public String getModelName() {
+        return modelName.get();
     }
 
-    public SimpleDoubleProperty engineCapacityProperty() {
-        return engineCapacity;
+    public SimpleStringProperty modelNameProperty() {
+        return modelName;
     }
 
-    public void setEngineCapacity(double engineCapacity) {
-        this.engineCapacity.set(engineCapacity);
+    public void setModelName(String modelName) {
+        this.modelName.set(modelName);
     }
 
-    public double getEnginePower() {
-        return enginePower.get();
+    public String getProdCountry() {
+        return prodCountry.get();
     }
 
-    public SimpleDoubleProperty enginePowerProperty() {
-        return enginePower;
+    public SimpleStringProperty prodCountryProperty() {
+        return prodCountry;
     }
 
-    public void setEnginePower(double enginePower) {
-        this.enginePower.set(enginePower);
+    public void setProdCountry(String prodCountry) {
+        this.prodCountry.set(prodCountry);
     }
 
     @Override
     public String toString() {
-        return name.get();
+        return brandName.get() + " (" + modelName.get() + ")";
     }
 }

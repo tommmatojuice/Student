@@ -27,6 +27,18 @@ public class AutoShopsManager
                         resultSet.getString("name")
                 ));
             }
+
+            for(int i = 0; i<autoShops.size(); i++){
+                String sql2 = "SELECT distinct CONCAT( model_name,'(', model_small_name,',', prod_country,')' ) as models FROM `auto_repair_shops`, `car_models`, `repaired_models` " +
+                        "WHERE `repaired_models`.`shop_number`=" + autoShops.get(i).getShop_number() + " and repaired_models.model_id = car_models.model_id";
+                Statement s2 = c.createStatement();
+                ResultSet resultSet2 = s2.executeQuery(sql2);
+                while (resultSet2.next()){
+                    autoShops.get(i).setModels(autoShops.get(i).getModels() + ' ' + resultSet2.getString("models"));
+                }
+            }
+
+            System.out.println(autoShops.get(1).getModels());
             return autoShops;
         }
     }

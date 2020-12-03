@@ -8,12 +8,15 @@ import com.jfoenix.controls.JFXButton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseEvent;
+import javafx.util.Callback;
 
 public class AutoshopsController
 {
@@ -97,8 +100,11 @@ public class AutoshopsController
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         nameColumn.setCellFactory(TextFieldTableCell. forTableColumn());
 
+        TableColumn<AutoShops, String> modelsColumn = new TableColumn<>("Обслуживаемые марки");
+        modelsColumn.setCellValueFactory(new PropertyValueFactory<>("models"));
+
         auto_table.setItems(autoShopsManager.getAll());
-        auto_table.getColumns().addAll(addressColumn, nameColumn);
+        auto_table.getColumns().addAll(addressColumn, nameColumn, modelsColumn);
         auto_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         auto_table.setEditable(true);
 
@@ -115,16 +121,47 @@ public class AutoshopsController
             autoShop.setName(event.getNewValue());
             changeCheck(autoShop, "Название");
         });
+
+        modelsColumn.setCellFactory(new Callback<TableColumn<AutoShops, String>, TableCell<AutoShops, String>>() {
+            @Override
+            public TableCell<AutoShops, String> call(TableColumn<AutoShops, String> col) {
+                final TableCell<AutoShops, String> cell = new TableCell<AutoShops, String>() {
+                    @Override
+                    public void updateItem(String firstName, boolean empty) {
+                        super.updateItem(firstName, empty);
+                        if (empty) {
+                            setText(null);
+                        } else setText(firstName);
+                    }
+                };
+                cell.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        if (event.getClickCount() > 1) {
+                            System.out.println(cell.getTableView().getItems().get(cell.getIndex()).getShop_number());
+                            System.out.println(cell.getTableView().getItems().get(cell.getIndex()).getName());
+                            try {
+                                systemHelper.doubleClick(userName, cell.getTableView().getItems().get(cell.getIndex()), shops_button);
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+//                                shops_button.getScene().getWindow().hide();
+//                                FXMLLoader loader = systemHelper.openWindow("autoshops.fxml",  masters_button.getScene().getWidth());
+//                                ShopModelsController controllerEditBook = loader.getController();
+//                                controllerEditBook.setElements(userName, cell.getTableView().getItems().get(cell.getIndex()));
+                        }
+//                            System.out.println("double click on "+cell.getItem() + cell.getTableView().getItems().get(cell.getIndex()).getShop_number());
+                    }
+                });
+                return cell ;
+            }
+        });
     }
 
     private void initButtons(){
         add_button.setOnAction(event -> {
             addAutoShop();
         });
-
-//        System.out.println(userName);
-//        systemHelper.initMenu(userName, out_button, shops_button, masters_button, model_button, cars_button, client_button,
-//                consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
     @FXML

@@ -8,11 +8,13 @@ public class AutoShops extends RecursiveTreeObject<AutoShops> {
     private SimpleIntegerProperty shop_number;
     private SimpleStringProperty address;
     private SimpleStringProperty name;
+    private SimpleStringProperty models;
 
     public AutoShops(int shop_number, String address, String name) {
         this.shop_number = new SimpleIntegerProperty(shop_number);
         this.address = new SimpleStringProperty(address);
         this.name = new SimpleStringProperty(name);
+        this.models = new SimpleStringProperty("");
     }
 
     public AutoShops(String address, String name) {
@@ -53,6 +55,18 @@ public class AutoShops extends RecursiveTreeObject<AutoShops> {
 
     public void setName(String name) {
         this.name.set(name);
+    }
+
+    public String getModels() {
+        return models.get();
+    }
+
+    public SimpleStringProperty modelsProperty() {
+        return models;
+    }
+
+    public void setModels(String models) {
+        this.models.set(models);
     }
 
     @Override
