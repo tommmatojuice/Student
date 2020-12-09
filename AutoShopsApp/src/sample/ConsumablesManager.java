@@ -1,8 +1,5 @@
 package sample;
 
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -25,8 +22,8 @@ public class ConsumablesManager
                 consumables.add(new Consumables(
                         resultSet.getInt("consumable_id"),
                         resultSet.getString("consumables_name"),
-                        Types.valueOf(resultSet.getString("consumables_type")),
-                        Units.valueOf(resultSet.getString("consumables_unit")),
+                        TypesEnum.valueOf(resultSet.getString("consumables_type")),
+                        UnitsEnum.valueOf(resultSet.getString("consumables_unit")),
                         resultSet.getDouble("consumables_cost"),
                         resultSet.getString("consumables_producer")
 

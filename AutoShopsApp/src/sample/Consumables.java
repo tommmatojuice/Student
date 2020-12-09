@@ -8,13 +8,13 @@ public class Consumables
 {
     private SimpleIntegerProperty consumableId;
     private SimpleStringProperty consumableName;
-    private Types consumableType;
-    private Units consumableUnit;
+    private TypesEnum consumableType;
+    private UnitsEnum consumableUnit;
     private SimpleDoubleProperty consumablePrice;
     private SimpleStringProperty consumableProducer;
 
-    public Consumables(int consumableId, String consumableName, Types consumableType, Units consumableUnit,
-                              double consumablePrice, String consumableProducer) {
+    public Consumables(int consumableId, String consumableName, TypesEnum consumableType, UnitsEnum consumableUnit,
+                       double consumablePrice, String consumableProducer) {
         this.consumableId = new SimpleIntegerProperty(consumableId);
         this.consumableName = new SimpleStringProperty(consumableName);
         this.consumableType = consumableType;
@@ -23,8 +23,8 @@ public class Consumables
         this.consumableProducer = new SimpleStringProperty(consumableProducer);
     }
 
-    public Consumables(String consumableName, Types consumableType, Units consumableUnit,
-                              double consumablePrice, String consumableProducer) {
+    public Consumables(String consumableName, TypesEnum consumableType, UnitsEnum consumableUnit,
+                       double consumablePrice, String consumableProducer) {
         this(-1, consumableName, consumableType, consumableUnit, consumablePrice, consumableProducer);
     }
 
@@ -52,19 +52,19 @@ public class Consumables
         this.consumableName.set(consumableName);
     }
 
-    public Types getConsumableType() {
+    public TypesEnum getConsumableType() {
         return consumableType;
     }
 
-    public void setConsumableType(Types consumableType) {
+    public void setConsumableType(TypesEnum consumableType) {
         this.consumableType = consumableType;
     }
 
-    public Units getConsumableUnit() {
+    public UnitsEnum getConsumableUnit() {
         return consumableUnit;
     }
 
-    public void setConsumableUnit(Units consumableUnit) {
+    public void setConsumableUnit(UnitsEnum consumableUnit) {
         this.consumableUnit = consumableUnit;
     }
 

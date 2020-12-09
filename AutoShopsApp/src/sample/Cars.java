@@ -81,12 +81,6 @@ public class Cars
 
     @Override
     public String toString() {
-        return "Cars{" +
-                "stateNumber=" + stateNumber +
-                ", yearOfIssue=" + yearOfIssue +
-                ", dateSheetNumber=" + dateSheetNumber +
-                ", modelId=" + modelId +
-                ", customerId=" + customerId +
-                '}';
+        return stateNumber.get();
     }
 }

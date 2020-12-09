@@ -71,11 +71,6 @@ public class Masters
 
     @Override
     public String toString() {
-        return "Masters{" +
-                ", masterId=" + masterId +
-                ", name=" + name +
-                ", phone=" + phone +
-                ", autoShopId=" + autoShopId +
-                '}';
+        return name.get();
     }
 }

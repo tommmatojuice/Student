@@ -2,12 +2,8 @@ package sample;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -15,13 +11,9 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
-import javafx.util.StringConverter;
 import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.IntegerStringConverter;
 
-import java.sql.Date;
 import java.sql.SQLException;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class ConsumablesController {
@@ -38,9 +30,9 @@ public class ConsumablesController {
 
     @FXML private TextField producer_enter;
 
-    @FXML private ComboBox<Types> type_enter;
+    @FXML private ComboBox<TypesEnum> type_enter;
 
-    @FXML private ComboBox<Units> unit_enter;
+    @FXML private ComboBox<UnitsEnum> unit_enter;
 
     @FXML private JFXButton out_button;
 
@@ -79,8 +71,8 @@ public class ConsumablesController {
     }
 
     private void initElements() throws SQLException {
-        type_enter.getItems().setAll(Types.values());
-        unit_enter.getItems().setAll(Units.values());
+        type_enter.getItems().setAll(TypesEnum.values());
+        unit_enter.getItems().setAll(UnitsEnum.values());
     }
 
     @FXML
@@ -120,29 +112,29 @@ public class ConsumablesController {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("consumableName"));
         nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        TableColumn<Consumables,Types> typeColumn = new TableColumn<>("Тип");
-        typeColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Consumables, Types>, ObservableValue<Types>>() {
+        TableColumn<Consumables, TypesEnum> typeColumn = new TableColumn<>("Тип");
+        typeColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Consumables, TypesEnum>, ObservableValue<TypesEnum>>() {
             @Override
-            public ObservableValue<Types> call(TableColumn.CellDataFeatures<Consumables, Types> param) {
+            public ObservableValue<TypesEnum> call(TableColumn.CellDataFeatures<Consumables, TypesEnum> param) {
                 Consumables consumable = param.getValue();
                 String typeValue = consumable.getConsumableType().name();
-                Types type = Types.valueOf(typeValue);
-                return new SimpleObjectProperty<Types>(type);
+                TypesEnum type = TypesEnum.valueOf(typeValue);
+                return new SimpleObjectProperty<TypesEnum>(type);
             }
         });
-        typeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(Types.values())));
+        typeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(TypesEnum.values())));
 
-        TableColumn<Consumables,Units> unitColumn = new TableColumn<>("Единица измерения");
-        unitColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Consumables, Units>, ObservableValue<Units>>() {
+        TableColumn<Consumables, UnitsEnum> unitColumn = new TableColumn<>("Единица измерения");
+        unitColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Consumables, UnitsEnum>, ObservableValue<UnitsEnum>>() {
             @Override
-            public ObservableValue<Units> call(TableColumn.CellDataFeatures<Consumables, Units> param) {
+            public ObservableValue<UnitsEnum> call(TableColumn.CellDataFeatures<Consumables, UnitsEnum> param) {
                 Consumables consumable = param.getValue();
                 String unitValue = consumable.getConsumableUnit().name();
-                Units unit = Units.valueOf(unitValue);
-                return new SimpleObjectProperty<Units>(unit);
+                UnitsEnum unit = UnitsEnum.valueOf(unitValue);
+                return new SimpleObjectProperty<UnitsEnum>(unit);
             }
         });
-        unitColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(Units.values())));
+        unitColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(UnitsEnum.values())));
 
         TableColumn<Consumables,Double> priceColumn = new TableColumn<>("Стоимость");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("consumablePrice"));
@@ -160,15 +152,15 @@ public class ConsumablesController {
             changeCheck(consumable, event.getNewValue());
         });
 
-        typeColumn.setOnEditCommit((TableColumn.CellEditEvent<Consumables, Types> event) ->{
-            TablePosition<Consumables, Types> pos = event.getTablePosition();
+        typeColumn.setOnEditCommit((TableColumn.CellEditEvent<Consumables, TypesEnum> event) ->{
+            TablePosition<Consumables, TypesEnum> pos = event.getTablePosition();
             Consumables consumable = event.getTableView().getItems().get(pos.getRow());
             consumable.setConsumableType(event.getNewValue());
             changeCheck(consumable, event.getNewValue().toString());
         });
 
-        unitColumn.setOnEditCommit((TableColumn.CellEditEvent<Consumables, Units> event) ->{
-            TablePosition<Consumables, Units> pos = event.getTablePosition();
+        unitColumn.setOnEditCommit((TableColumn.CellEditEvent<Consumables, UnitsEnum> event) ->{
+            TablePosition<Consumables, UnitsEnum> pos = event.getTablePosition();
             Consumables consumable = event.getTableView().getItems().get(pos.getRow());
             consumable.setConsumableUnit(event.getNewValue());
             changeCheck(consumable, event.getNewValue().toString());

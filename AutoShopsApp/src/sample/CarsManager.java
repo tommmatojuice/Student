@@ -71,4 +71,22 @@ public class CarsManager
             return statement.executeUpdate();
         }
     }
+
+    public Cars getById(String stateNumber) throws SQLException {
+        try(Connection c = systemHelper.getConnection()){
+            String sql = "SELECT * FROM cars WHERE state_number=?";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setString(1, stateNumber);
+            ResultSet resultSet = statement.executeQuery();
+
+            if(resultSet.next()){
+                return new Cars(resultSet.getString("state_number"),
+                        resultSet.getDate("year_of_issue"),
+                        resultSet.getInt("data_sheet_number"),
+                        resultSet.getInt("model_id"),
+                        resultSet.getInt("id_customer"));
+            }
+            return null;
+        }
+    }
 }

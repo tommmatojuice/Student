@@ -68,4 +68,43 @@ public class MastersManager
             s.executeUpdate();
         }
     }
+
+    public Masters getById(int id) throws SQLException {
+        try(Connection c = systemHelper.getConnection()){
+            String sql = "SELECT * FROM masters WHERE master_id=?";
+            PreparedStatement s = c.prepareStatement(sql);
+            s.setInt(1, id);
+            ResultSet resultSet = s.executeQuery();
+
+            if (resultSet.next()){
+                return new Masters(
+                        resultSet.getInt("master_id"),
+                        resultSet.getString("full_name"),
+                        resultSet.getString("phone_number"),
+                        resultSet.getInt("shop_number")
+                );
+            }
+            return null;
+        }
+    }
+
+    public ObservableList<Masters> getByShop(int shopNumber) throws SQLException {
+        try(Connection c = systemHelper.getConnection()){
+            String sql = "SELECT * FROM masters WHERE shop_number=?";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setInt(1, shopNumber);
+
+            ObservableList<Masters> masters = FXCollections.observableArrayList();
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                masters.add(new Masters(
+                        resultSet.getInt("master_id"),
+                        resultSet.getString("full_name"),
+                        resultSet.getString("phone_number"),
+                        resultSet.getInt("shop_number")));
+            }
+            return masters;
+        }
+    }
 }

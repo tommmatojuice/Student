@@ -1,6 +1,6 @@
 package sample;
 
-public enum Units {
+public enum UnitsEnum {
     METRE("м"),
     KILOGRAM("кг"),
     LITRE("л"),
@@ -9,7 +9,7 @@ public enum Units {
 
     private final String value;
 
-    private Units(String name) {
+    private UnitsEnum(String name) {
         this.value = name;
     }
 

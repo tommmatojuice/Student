@@ -138,19 +138,12 @@ public class AutoshopsController
                     @Override
                     public void handle(MouseEvent event) {
                         if (event.getClickCount() > 1) {
-                            System.out.println(cell.getTableView().getItems().get(cell.getIndex()).getShop_number());
-                            System.out.println(cell.getTableView().getItems().get(cell.getIndex()).getName());
                             try {
-                                systemHelper.doubleClick(userName, cell.getTableView().getItems().get(cell.getIndex()), shops_button);
+                                systemHelper.doubleClickOnModels(userName, cell.getTableView().getItems().get(cell.getIndex()), shops_button);
                             } catch (SQLException throwables) {
                                 throwables.printStackTrace();
                             }
-//                                shops_button.getScene().getWindow().hide();
-//                                FXMLLoader loader = systemHelper.openWindow("autoshops.fxml",  masters_button.getScene().getWidth());
-//                                ShopModelsController controllerEditBook = loader.getController();
-//                                controllerEditBook.setElements(userName, cell.getTableView().getItems().get(cell.getIndex()));
                         }
-//                            System.out.println("double click on "+cell.getItem() + cell.getTableView().getItems().get(cell.getIndex()).getShop_number());
                     }
                 });
                 return cell ;

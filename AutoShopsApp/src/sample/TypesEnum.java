@@ -1,6 +1,6 @@
 package sample;
 
-public enum Types {
+public enum TypesEnum {
     OIL("Масло"),
     FILTER("Фильтр"),
     PAINT("Краска"),
@@ -9,7 +9,7 @@ public enum Types {
 
     private final String value;
 
-    private Types(String name) {
+    private TypesEnum(String name) {
         this.value = name;
     }
 

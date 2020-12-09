@@ -10,12 +10,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import util.MysqlDatabase;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -141,9 +144,21 @@ public class SystemHelper
             ConsumablesController controller = loader.getController();
             controller.setUserName(userName);
         });
+
+        cintract_button.setOnAction(event -> {
+            cintract_button.getScene().getWindow().hide();
+            FXMLLoader loader = null;
+            try {
+                loader = this.openWindow("contracts.fxml", cintract_button.getScene().getWidth());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            ContractsController controller = loader.getController();
+            controller.setUserName(userName);
+        });
     }
 
-    public void doubleClick(String userName, AutoShops autoShop ,JFXButton button) throws SQLException {
+    public void doubleClickOnModels(String userName, AutoShops autoShop, JFXButton button) throws SQLException {
         button.getScene().getWindow().hide();
         FXMLLoader loader = null;
         try {
@@ -153,6 +168,18 @@ public class SystemHelper
         }
         ShopModelsController controller = loader.getController();
         controller.initialize(userName, autoShop);
+    }
+
+    public void doubleClickOnContract(String userName, Contracts contract, JFXButton button) throws SQLException {
+        button.getScene().getWindow().hide();
+        FXMLLoader loader = null;
+        try {
+            loader = this.openWindow("works.fxml", button.getScene().getWidth());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        WorksController controller = loader.getController();
+        controller.initialize(userName, contract);
     }
 
     public void showErrorMessage(String title, String message)
@@ -171,10 +198,6 @@ public class SystemHelper
         alert.setHeaderText(header);
         alert.setContentText(message);
         return alert;
-    }
-
-    public String getUser() {
-        return user;
     }
 
     public void setUser(String user) {
@@ -203,5 +226,30 @@ public class SystemHelper
         Pattern pattern = Pattern.compile("[А-Я]\\d{3}[А-Я]{2}\\d{2,3}");
         Matcher matcher = pattern.matcher(stateNumber);
         return matcher.find();
+    }
+
+    public StringConverter<Date> getStringConverter(){
+        return new StringConverter<Date>() {
+            String pattern = "yyyy-MM-dd";
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+
+            @Override
+            public String toString(Date date) {
+                if (date != null) {
+                    return dateFormatter.format(date.toLocalDate());
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public Date fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return Date.valueOf(string);
+                } else {
+                    return null;
+                }
+            }
+        };
     }
 }
