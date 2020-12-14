@@ -69,4 +69,20 @@ public class ServicesManager
             statement.execute();
         }
     }
+
+    public Services getById(int id) throws SQLException {
+        try(Connection c = systemHelper.getConnection()){
+            String sql = "SELECT * FROM services WHERE `services`.`service_id(3)`=?";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()){
+                return new Services(resultSet.getInt("service_id(3)"),
+                        resultSet.getString("type_of_repair"),
+                        resultSet.getDouble("price"));
+            }
+            return null;
+        }
+    }
 }

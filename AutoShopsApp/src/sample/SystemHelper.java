@@ -1,14 +1,11 @@
 package sample;
 
 import com.jfoenix.controls.JFXButton;
-import javafx.css.Match;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import util.MysqlDatabase;
@@ -156,6 +153,34 @@ public class SystemHelper
             ContractsController controller = loader.getController();
             controller.setUserName(userName);
         });
+
+        math_button.setOnAction(event -> {
+            math_button.getScene().getWindow().hide();
+            FXMLLoader loader = null;
+            try {
+                loader = this.openWindow("analytics.fxml", math_button.getScene().getWidth());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            AnalyticsPageController controller = loader.getController();
+            controller.initialize(userName);
+        });
+
+        users_button.setOnAction(event -> {
+            users_button.getScene().getWindow().hide();
+            FXMLLoader loader = null;
+            try {
+                loader = this.openWindow("users.fxml", users_button.getScene().getWidth());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            UsersController controller = loader.getController();
+            try {
+                controller.initialize(userName);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
     }
 
     public void doubleClickOnModels(String userName, AutoShops autoShop, JFXButton button) throws SQLException {
@@ -182,6 +207,18 @@ public class SystemHelper
         controller.initialize(userName, contract);
     }
 
+    public void doubleClickOnConsumables(String userName, Contracts contract, Works works, JFXButton button) throws SQLException {
+        button.getScene().getWindow().hide();
+        FXMLLoader loader = null;
+        try {
+            loader = this.openWindow("consumables_use.fxml", button.getScene().getWidth());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        ConsumablesUseController controller = loader.getController();
+        controller.initialize(userName, contract, works);
+    }
+
     public void showErrorMessage(String title, String message)
     {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -197,6 +234,19 @@ public class SystemHelper
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(message);
+        return alert;
+    }
+
+    public Alert showMyMessage(String title, String header, String message)
+    {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(message);
+
+        ButtonType copy = new ButtonType("Скопировать");
+        alert.getButtonTypes().clear();
+        alert.getButtonTypes().add(copy);
         return alert;
     }
 

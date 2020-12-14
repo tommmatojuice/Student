@@ -95,5 +95,4 @@ public class CustomerManager
             return null;
         }
     }
-
 }

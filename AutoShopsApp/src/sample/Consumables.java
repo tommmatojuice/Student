@@ -94,13 +94,6 @@ public class Consumables
 
     @Override
     public String toString() {
-        return "ConsumablesManager{" +
-                "consumableId=" + consumableId +
-                ", consumableName=" + consumableName +
-                ", consumableType=" + consumableType +
-                ", consumableUnit=" + consumableUnit +
-                ", consumablePrice=" + consumablePrice +
-                ", consumableProducer=" + consumableProducer +
-                '}';
+        return consumableName.get();
     }
 }

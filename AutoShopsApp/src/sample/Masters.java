@@ -3,8 +3,12 @@ package sample;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
+import java.sql.SQLException;
+
 public class Masters
 {
+    private AutoShopsManager autoShopsManager = new AutoShopsManager();
+
     private SimpleIntegerProperty masterId;
     private SimpleStringProperty name;
     private SimpleStringProperty phone;
@@ -71,6 +75,11 @@ public class Masters
 
     @Override
     public String toString() {
-        return name.get();
+        try {
+            return name.get() + " - " + autoShopsManager.getById(this.getAutoShopId()).getName();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
     }
 }

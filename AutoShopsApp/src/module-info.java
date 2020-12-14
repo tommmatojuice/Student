@@ -6,5 +6,7 @@ module AutoShopsApp {
 
     requires java.naming;
     requires com.jfoenix;
+    requires java.datatransfer;
+    requires java.desktop;
     opens sample;
 }

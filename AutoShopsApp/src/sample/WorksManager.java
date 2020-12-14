@@ -26,6 +26,17 @@ public class WorksManager
                         resultSet.getDate("completion_date"),
                         resultSet.getDate("actual_completion_date")));
             }
+
+//            for (Works work : works) {
+//                String sql2 = "SELECT distinct CONCAT( model_name,'(', model_small_name,', ', prod_country,')' ) as models FROM `auto_repair_shops`, `car_models`, `repaired_models` " +
+//                        "WHERE `repaired_models`.`shop_number`=" + autoShop.getShop_number() + " and repaired_models.model_id = car_models.model_id";
+//                Statement s2 = c.createStatement();
+//                ResultSet resultSet2 = s2.executeQuery(sql2);
+//                while (resultSet2.next()) {
+//                    autoShop.setModels(autoShop.getModels() + ' ' + resultSet2.getString("models"));
+//                }
+//            }
+
             return works;
         }
     }
@@ -57,7 +68,7 @@ public class WorksManager
             String sql = "UPDATE repair_works SET service_id=?, contract_number=?, master_id=?," +
                     "receipt_date=?, completion_date=?, actual_completion_date=? where work_id=?";
             PreparedStatement statement = c.prepareStatement(sql);
-            statement.setInt(1, work.getShopId());
+            statement.setInt(1, work.getServiceId());
             statement.setInt(2, work.getContractNumber());
             statement.setInt(3, work.getMasterId());
             statement.setDate(4, work.getReceiptDate());
@@ -74,7 +85,7 @@ public class WorksManager
             String sql = "INSERT INTO repair_works(service_id, contract_number, master_id, receipt_date, " +
                     "completion_date, actual_completion_date) VALUES(?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = c.prepareStatement(sql);
-            statement.setInt(1, work.getShopId());
+            statement.setInt(1, work.getServiceId());
             statement.setInt(2, work.getContractNumber());
             statement.setInt(3, work.getMasterId());
             statement.setDate(4, work.getReceiptDate());

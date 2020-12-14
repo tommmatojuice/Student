@@ -64,4 +64,18 @@ public class ContractManager
             statement.executeUpdate();
         }
     }
+
+    public Double getCost(int id) throws SQLException {
+        try(Connection c = systemHelper.getConnection()){
+            String sql = "SELECT sum(price) as price FROM repair_works, services WHERE repair_works.contract_number = ? and repair_works.service_id = services.`service_id(3)`";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setInt(1, id);
+
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                return resultSet.getDouble("price");
+            }
+            return null;
+        }
+    }
 }

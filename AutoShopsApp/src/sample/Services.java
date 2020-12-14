@@ -59,10 +59,6 @@ public class Services
 
     @Override
     public String toString() {
-        return "Services{" +
-                "seviceId=" + seviceId +
-                ", type=" + type +
-                ", price=" + price +
-                '}';
+        return type.get();
     }
 }

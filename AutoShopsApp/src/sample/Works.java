@@ -3,26 +3,39 @@ package sample;
 import javafx.beans.property.SimpleIntegerProperty;
 
 import java.sql.Date;
+import java.sql.SQLException;
 
 public class Works
 {
+    private ConsumablesManager consumablesManager = new ConsumablesManager();
+
     private SimpleIntegerProperty workId;
-    private SimpleIntegerProperty shopId;
+    private SimpleIntegerProperty serviceId;
     private SimpleIntegerProperty contractNumber;
     private SimpleIntegerProperty masterId;
     private Date receiptDate;
     private Date completionDate;
     private Date actualCompletionDate;
+    private String consumables = "";
 
-    public Works(int workId, int shopId, int contractNumber,
+    public Works(int workId, int serviceId, int contractNumber,
                  int masterId, Date receiptDate, Date completionDate, Date actualCompletionDate) {
         this.workId = new SimpleIntegerProperty(workId);
-        this.shopId = new SimpleIntegerProperty(shopId);
+        this.serviceId = new SimpleIntegerProperty(serviceId);
         this.contractNumber = new SimpleIntegerProperty(contractNumber);
         this.masterId = new SimpleIntegerProperty(masterId);
         this.receiptDate = receiptDate;
         this.completionDate = completionDate;
         this.actualCompletionDate = actualCompletionDate;
+
+        try {
+            for(String consumableName: consumablesManager.getByWorkId(getWorkId())){
+                this.consumables+=consumableName+", ";
+            }
+            this.consumables = this.consumables.substring(0, this.consumables.length()-2);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     public Works(int shopId, int contractNumber,
@@ -42,16 +55,16 @@ public class Works
         this.workId.set(workId);
     }
 
-    public int getShopId() {
-        return shopId.get();
+    public int getServiceId() {
+        return serviceId.get();
     }
 
-    public SimpleIntegerProperty shopIdProperty() {
-        return shopId;
+    public SimpleIntegerProperty serviceIdProperty() {
+        return serviceId;
     }
 
-    public void setShopId(int shopId) {
-        this.shopId.set(shopId);
+    public void setServiceId(int serviceId) {
+        this.serviceId.set(serviceId);
     }
 
     public int getContractNumber() {
@@ -102,11 +115,15 @@ public class Works
         this.actualCompletionDate = actualCompletionDate;
     }
 
+    public String getConsumables() {
+        return consumables;
+    }
+
     @Override
     public String toString() {
         return "Works{" +
                 "workId=" + workId +
-                ", shopId=" + shopId +
+                ", shopId=" + serviceId +
                 ", contractNumber=" + contractNumber +
                 ", masterId=" + masterId +
                 ", receiptDate=" + receiptDate +

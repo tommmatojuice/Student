@@ -297,7 +297,9 @@ public class ContractsController
                 }
 
                 String lowerCaseFilter = newValue.toLowerCase();
-                if(contract.getDateOpen().toString().toLowerCase().contains(lowerCaseFilter)){
+                if(String.valueOf(contract.getId()).toLowerCase().contains(lowerCaseFilter)){
+                    return true;
+                } else if(contract.getDateOpen().toString().toLowerCase().contains(lowerCaseFilter)){
                     return true;
                 } else if(contract.getDateClose().toString().toLowerCase().contains(lowerCaseFilter)){
                     return true;

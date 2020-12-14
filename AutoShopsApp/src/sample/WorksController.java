@@ -9,11 +9,14 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseEvent;
+import javafx.util.Callback;
 
 import java.sql.*;
 import java.util.Optional;
@@ -27,7 +30,7 @@ public class WorksController
     private JFXButton add_button;
 
     @FXML
-    private ComboBox<AutoShops> shop_enter;
+    private ComboBox<Services> service_enter;
 
     @FXML
     private ComboBox<Masters> master_enter;
@@ -49,6 +52,9 @@ public class WorksController
 
     @FXML
     private Label work_info;
+
+    @FXML
+    private Label cost_label;
 
     @FXML
     private JFXButton shops_button;
@@ -87,36 +93,43 @@ public class WorksController
     private final WorksManager worksManager = new WorksManager();
     private final AutoShopsManager autoShopsManager = new AutoShopsManager();
     private final MastersManager mastersManager = new MastersManager();
+    private final ServicesManager servicesManager = new ServicesManager();
+    private final CarsManager carsManager = new CarsManager();
+    private final CustomerManager customerManager = new CustomerManager();
+    private final ContractManager contractManager = new ContractManager();
     private Contracts contract;
     private String userName;
 
     @FXML
     void initialize(String userName, Contracts contract) throws SQLException {
         this.contract = contract;
+        this.userName = userName;
         setTable();
         initButtons();
         initElements();
     }
 
     private void initElements() throws SQLException {
-        shop_enter.setItems(autoShopsManager.getAll());
-        if (!works_table.getItems().isEmpty())
-            shop_enter.setValue(autoShopsManager.getById(works_table.getItems().get(0).getShopId()));
-        if (shop_enter.getValue() != null)
-            master_enter.setItems(mastersManager.getByShop(shop_enter.getValue().getShop_number()));
-        work_info.setText("Контракт: №" + contract.getId());
+        service_enter.setItems(servicesManager.getAll());
+//        if (!works_table.getItems().isEmpty())
+//            shop_enter.setValue(autoShopsManager.getById(works_table.getItems().get(0).getShopId()));
+//        if (shop_enter.getValue() != null)
+//            master_enter.setItems(mastersManager.getByShop(shop_enter.getValue().getShop_number()));
+        work_info.setText("Контракт: №" + contract.getId() + "\n" + "Автомобиль: " + contract.getStateNumber() + "\n" +
+                "Клиент: " + customerManager.getById(carsManager.getById(contract.getStateNumber()).getCustomerId()).toString());
         user_label.setText(userName);
+        cost_label.setText("Сумма: " + contractManager.getCost(this.contract.getId()).toString() + " руб.");
         systemHelper.initMenu(userName, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
 
-        ChangeListener<AutoShops> changeListener = (observable, oldValue, newValue) -> {
-            try {
-                master_enter.setItems(mastersManager.getByShop(newValue.getShop_number()));
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        };
-        shop_enter.getSelectionModel().selectedItemProperty().addListener(changeListener);
+//        ChangeListener<AutoShops> changeListener = (observable, oldValue, newValue) -> {
+//            try {
+//                master_enter.setItems(mastersManager.getByShop(newValue.getShop_number()));
+//            } catch (SQLException throwables) {
+//                throwables.printStackTrace();
+//            }
+//        };
+//        shop_enter.getSelectionModel().selectedItemProperty().addListener(changeListener);
     }
 
     private void initButtons(){
@@ -146,24 +159,38 @@ public class WorksController
 
     private void setTable() throws SQLException
     {
-        TableColumn<Works, AutoShops> shopColumn = new TableColumn<>("Автомастерская");
-        shopColumn.setCellValueFactory(param -> {
+//        TableColumn<Works, AutoShops> shopColumn = new TableColumn<>("Автомастерская");
+//        shopColumn.setCellValueFactory(param -> {
+//            Works work = param.getValue();
+//            int shopId = work.getShopId();
+//            AutoShops autoShop = null;
+//            try {
+//                autoShop = autoShopsManager.getById(shopId);
+//            } catch (SQLException throwables) {
+//                throwables.printStackTrace();
+//            }
+//            return new SimpleObjectProperty<>(autoShop);
+//        });
+//        shopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(autoShopsManager.getAll()));
+
+        TableColumn<Works, Services> serviceColumn = new TableColumn<>("Тип ремонта");
+        serviceColumn.setCellValueFactory(param -> {
             Works work = param.getValue();
-            int shopId = work.getShopId();
-            AutoShops autoShop = null;
+            int serviceId = work.getServiceId();
+            Services service = null;
             try {
-                autoShop = autoShopsManager.getById(shopId);
+                service = servicesManager.getById(serviceId);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-            return new SimpleObjectProperty<>(autoShop);
+            return new SimpleObjectProperty<>(service);
         });
-        shopColumn.setCellFactory(ComboBoxTableCell.forTableColumn(autoShopsManager.getAll()));
+        serviceColumn.setCellFactory(ComboBoxTableCell.forTableColumn(servicesManager.getAll()));
 
         TableColumn<Works, Masters> masterColumn = new TableColumn<>("Мастер");
         masterColumn.setCellValueFactory(param -> {
             Works work = param.getValue();
-            int masterId = work.getShopId();
+            int masterId = work.getMasterId();
             Masters master = null;
             try {
                 master = mastersManager.getById(masterId);
@@ -186,10 +213,53 @@ public class WorksController
         actualCompletionDateColumn.setCellValueFactory(new PropertyValueFactory<>("actualCompletionDate"));
         actualCompletionDateColumn.setCellFactory(TextFieldTableCell.forTableColumn(systemHelper.getStringConverter()));
 
-        shopColumn.setOnEditCommit((TableColumn.CellEditEvent<Works, AutoShops> event) ->{
-            TablePosition<Works, AutoShops> pos = event.getTablePosition();
+        TableColumn<Works, Double> priceColumn = new TableColumn<>("Стоимость ремонта (руб.)");
+        priceColumn.setCellValueFactory(param -> {
+            Works work = param.getValue();
+            int serviceId = work.getServiceId();
+            Double price = null;
+            try {
+                price = servicesManager.getById(serviceId).getPrice();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            return new SimpleObjectProperty<>(price);
+        });
+
+        TableColumn<Works, String> consumablesColumn = new TableColumn<>("Расходники");
+        consumablesColumn.setCellValueFactory(new PropertyValueFactory<>("consumables"));
+        consumablesColumn.setCellFactory(new Callback<TableColumn<Works, String>, TableCell<Works, String>>() {
+            @Override
+            public TableCell<Works, String> call(TableColumn<Works, String> param) {
+                final TableCell<Works, String> cell = new TableCell<Works, String>() {
+                    @Override
+                    public void updateItem(String consumables, boolean empty) {
+                        super.updateItem(consumables, empty);
+                        if (empty) {
+                            setText(null);
+                        } else setText(consumables.toString());
+                    }
+                };
+                cell.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        if (event.getClickCount() > 1) {
+                            try {
+                                systemHelper.doubleClickOnConsumables(userName, contract, cell.getTableView().getItems().get(cell.getIndex()), shops_button);
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+                        }
+                    }
+                });
+                return cell ;
+            }
+        });
+
+        serviceColumn.setOnEditCommit((TableColumn.CellEditEvent<Works, Services> event) ->{
+            TablePosition<Works, Services> pos = event.getTablePosition();
             Works work = event.getTableView().getItems().get(pos.getRow());
-            work.setShopId(event.getNewValue().getShop_number());
+            work.setServiceId(event.getNewValue().getSeviceId());
             changeCheck(work, event.getNewValue().toString());
         });
 
@@ -222,7 +292,8 @@ public class WorksController
         });
 
         works_table.setItems(worksManager.getByContract(contract.getId()));
-        works_table.getColumns().addAll(shopColumn, masterColumn, receiptDateColumn, completionDateColumn, actualCompletionDateColumn);
+        works_table.getColumns().addAll(serviceColumn, masterColumn, receiptDateColumn, completionDateColumn,
+                actualCompletionDateColumn, priceColumn, consumablesColumn);
         works_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         works_table.setEditable(true);
     }
@@ -232,6 +303,11 @@ public class WorksController
         if (option.isPresent()) {
             try {
                 worksManager.update(work);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            try {
+                works_table.setItems(worksManager.getAll());
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -246,17 +322,16 @@ public class WorksController
     }
 
     private void addWork(){
-        System.out.println(shop_enter.getItems());
         if(!receip_date_enter.getValue().toString().isEmpty() && !completion_date_enter.getValue().toString().isEmpty()
-                && shop_enter.getItems() != null && master_enter.getItems() != null){
+                && service_enter.getItems() != null && master_enter.getItems() != null){
             Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Ремонтная работа").showAndWait();
             if (option.isPresent()) {
                 try {
                     if(f_completion_date_enter.getValue() != null){
-                        worksManager.add(new Works(shop_enter.getValue().getShop_number(), this.contract.getId(), master_enter.getValue().getMasterId(),
+                        worksManager.add(new Works(service_enter.getValue().getSeviceId(), this.contract.getId(), master_enter.getValue().getMasterId(),
                                 Date.valueOf(receip_date_enter.getValue()), Date.valueOf(completion_date_enter.getValue()), Date.valueOf(f_completion_date_enter.getValue())));
                     } else {
-                        worksManager.add(new Works(shop_enter.getValue().getShop_number(), this.contract.getId(), master_enter.getValue().getMasterId(),
+                        worksManager.add(new Works(service_enter.getValue().getSeviceId(), this.contract.getId(), master_enter.getValue().getMasterId(),
                                 Date.valueOf(receip_date_enter.getValue()), Date.valueOf(completion_date_enter.getValue()), null));
                     }
                     works_table.setItems(worksManager.getAll());

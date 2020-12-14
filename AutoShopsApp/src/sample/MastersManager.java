@@ -107,4 +107,25 @@ public class MastersManager
             return masters;
         }
     }
+
+    //SELECT master_id, full_name, phone_number, shop_number from masters LEFT JOIN users on masters.master_id = users.master where users.master is NULL
+    public ObservableList<Masters> getWithoutAuth() throws SQLException {
+        try(Connection c = systemHelper.getConnection()){
+            String sql = "SELECT master_id, full_name, phone_number, shop_number from masters LEFT JOIN " +
+                    "users on masters.master_id = users.master where users.master is NULL";
+            Statement statement = c.createStatement();
+
+            ObservableList<Masters> masters = FXCollections.observableArrayList();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()){
+                masters.add(new Masters(
+                        resultSet.getInt("master_id"),
+                        resultSet.getString("full_name"),
+                        resultSet.getString("phone_number"),
+                        resultSet.getInt("shop_number")));
+            }
+            return masters;
+        }
+    }
 }
