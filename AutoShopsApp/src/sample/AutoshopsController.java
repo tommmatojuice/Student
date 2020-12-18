@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
@@ -74,6 +75,12 @@ public class AutoshopsController
     @FXML
     private JFXButton users_button;
 
+    @FXML
+    private ImageView contracts_image;
+
+    @FXML
+    private ImageView works_image;
+
     private final AutoShopsManager autoShopsManager = new AutoShopsManager();
     private SystemHelper systemHelper = new SystemHelper();
     private String userName;
@@ -87,7 +94,7 @@ public class AutoshopsController
     void setUserLabel(String name){
         userName = name;
         user_label.setText(name);
-        systemHelper.initMenu(name, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+        systemHelper.initMenu(name, 0, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
@@ -112,14 +119,14 @@ public class AutoshopsController
             TablePosition<AutoShops, String> pos = event.getTablePosition();
             AutoShops autoShop = event.getTableView().getItems().get(pos.getRow());
             autoShop.setAddress(event.getNewValue());
-            changeCheck(autoShop, "Адресс");
+            changeCheck(autoShop, event.getNewValue());
         });
 
         nameColumn.setOnEditCommit((TableColumn.CellEditEvent<AutoShops, String> event) -> {
             TablePosition<AutoShops, String> pos = event.getTablePosition();
             AutoShops autoShop = event.getTableView().getItems().get(pos.getRow());
             autoShop.setName(event.getNewValue());
-            changeCheck(autoShop, "Название");
+            changeCheck(autoShop, event.getNewValue());
         });
 
         modelsColumn.setCellFactory(new Callback<TableColumn<AutoShops, String>, TableCell<AutoShops, String>>() {

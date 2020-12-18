@@ -100,7 +100,7 @@ public class CarModelsController {
     public void setUserName(String name){
         userName = name;
         user_label.setText(name);
-        systemHelper.initMenu(name, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+        systemHelper.initMenu(name, 0, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
@@ -119,7 +119,7 @@ public class CarModelsController {
         modelColumn.setCellValueFactory(new PropertyValueFactory<>("modelName"));
         modelColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        TableColumn<CarModel, String> countryColumn = new TableColumn<>("Страна производтства");
+        TableColumn<CarModel, String> countryColumn = new TableColumn<>("Страна производства");
         countryColumn.setCellValueFactory(new PropertyValueFactory<>("prodCountry"));
         countryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 
@@ -132,21 +132,30 @@ public class CarModelsController {
             TablePosition<CarModel, String> pos = event.getTablePosition();
             CarModel carModel = event.getTableView().getItems().get(pos.getRow());
             carModel.setBrandName(event.getNewValue());
-            changeCheck(carModel, "Марка");
+            changeCheck(carModel, event.getNewValue());
         });
 
         modelColumn.setOnEditCommit((TableColumn.CellEditEvent<CarModel, String> event) -> {
             TablePosition<CarModel, String> pos = event.getTablePosition();
             CarModel carModel = event.getTableView().getItems().get(pos.getRow());
             carModel.setModelName(event.getNewValue());
-            changeCheck(carModel, "Модель");
+            changeCheck(carModel, event.getNewValue());
         });
 
         countryColumn.setOnEditCommit((TableColumn.CellEditEvent<CarModel, String> event) -> {
             TablePosition<CarModel, String> pos = event.getTablePosition();
             CarModel carModel = event.getTableView().getItems().get(pos.getRow());
-            carModel.setProdCountry(event.getNewValue());
-            changeCheck(carModel, "Страна производтства");
+            if(systemHelper.countryCheck(event.getNewValue())){
+                carModel.setProdCountry(event.getNewValue());
+                changeCheck(carModel, event.getNewValue());
+            } else {
+                systemHelper.showErrorMessage("Ошибка", "Неверно введена страна производства!");
+                try {
+                    models_table.setItems(carModelManager.getAll());
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
         });
     }
 
@@ -170,16 +179,18 @@ public class CarModelsController {
 
     private void addCarModel(){
         if(!model_enter.getText().isEmpty() && !brand_enter.getText().isEmpty() && !country_enter.getText().isEmpty()){
-            Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Клиент").showAndWait();
-            if (option.get() == ButtonType.OK) {
-                try {
-                    carModelManager.add(new CarModel(brand_enter.getText(), model_enter.getText() , country_enter.getText()));
-                    models_table.setItems(carModelManager.getAll());
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+            if(systemHelper.countryCheck(country_enter.getText())){
+                Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Модель автомобиля").showAndWait();
+                if (option.get() == ButtonType.OK) {
+                    try {
+                        carModelManager.add(new CarModel(brand_enter.getText(), model_enter.getText() , country_enter.getText()));
+                        models_table.setItems(carModelManager.getAll());
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+                    System.out.println("Add new!");
                 }
-                System.out.println("Add new!");
-            }
+            } else systemHelper.showErrorMessage("Ошибка", "Неверно введена страна производства!");
         } else systemHelper.showErrorMessage("Ошибка", "Введите данные!");
     }
 }

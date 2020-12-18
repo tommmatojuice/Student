@@ -56,6 +56,17 @@ public class CarModelManager
         }
     }
 
+    public void deleteShopHasModel(int shop_number, int model_id) throws SQLException
+    {
+        try (Connection c = systemHelper.getConnection()){
+            String sql = "DELETE FROM repaired_models WHERE shop_number=? and model_id=?";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setInt(1, shop_number);
+            statement.setInt(2, model_id);
+            statement.executeUpdate();
+        }
+    }
+
     public int update(CarModel carModel) throws SQLException
     {
         try (Connection c = systemHelper.getConnection()){
@@ -102,6 +113,26 @@ public class CarModelManager
         {
             String sql = "SELECT distinct car_models.model_id, model_name, model_small_name, prod_country FROM `auto_repair_shops`, `car_models`, `repaired_models` " +
                     "WHERE `repaired_models`.`shop_number`=? and repaired_models.model_id = car_models.model_id";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            ObservableList<CarModel> carModels = FXCollections.observableArrayList();
+            while (resultSet.next()){
+                carModels.add(new CarModel(resultSet.getInt("model_id"),
+                        resultSet.getString("model_name"),
+                        resultSet.getString("model_small_name"),
+                        resultSet.getString("prod_country")));
+            }
+            return carModels;
+        }
+    }
+
+    public ObservableList<CarModel> getNewModels(int id) throws SQLException {
+        try(Connection c = systemHelper.getConnection())
+        {
+            String sql = "SELECT * from car_models where car_models.model_id not in (select car_models.model_id from repaired_models, " +
+                    "car_models where car_models.model_id = repaired_models.model_id and repaired_models.shop_number=?)";
             PreparedStatement statement = c.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();

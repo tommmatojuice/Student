@@ -68,7 +68,7 @@
                   <Font name="Roboto Medium" size="13.0" />
                </font>
                <graphic>
-                  <ImageView fitHeight="22.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true" translateX="20.0">
+                  <ImageView fx:id="shops_image" fitHeight="22.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true" translateX="20.0">
                      <image>
                         <Image url="@asseats/baseline_emoji_transportation_white_48dp.png" />
                      </image>
@@ -80,7 +80,7 @@
                   <Font name="Roboto Medium" size="13.0" />
                </font>
                <graphic>
-                  <ImageView fitHeight="22.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true" translateX="20.0">
+                  <ImageView fx:id="masters_image" fitHeight="22.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true" translateX="20.0">
                      <image>
                         <Image url="@asseats/baseline_engineering_white_48dp.png" />
                      </image>

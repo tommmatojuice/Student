@@ -87,7 +87,11 @@ public class MastersController {
 
     public void initButtons(){
         add_button.setOnAction(event -> {
-            addMaster();
+            try {
+                addMaster();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         });
     }
 
@@ -98,7 +102,7 @@ public class MastersController {
     void setUserLabel(String name){
         userName = name;
         user_label.setText(name);
-        systemHelper.initMenu(name, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+        systemHelper.initMenu(name, 0, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
@@ -135,17 +139,31 @@ public class MastersController {
         nameColumn.setOnEditCommit((TableColumn.CellEditEvent<Masters, String> event) -> {
             TablePosition<Masters, String> pos = event.getTablePosition();
             Masters masters = event.getTableView().getItems().get(pos.getRow());
-            System.out.println(event.getNewValue());
-            masters.setName(event.getNewValue());
-            changeCheck(masters, "ФИО");
+            if(systemHelper.fullNameCheck(event.getNewValue())){
+                masters.setName(event.getNewValue());
+                changeCheck(masters, event.getNewValue());
+            } else {
+                systemHelper.showErrorMessage("Ошибка", "Неверные ФИО!");
+                try {
+                    masters_table.setItems(mastersManager.getAll());
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
         });
 
         phoneColumn.setOnEditCommit((TableColumn.CellEditEvent<Masters, String> event) -> {
             TablePosition<Masters, String> pos = event.getTablePosition();
             Masters masters = event.getTableView().getItems().get(pos.getRow());
             if(systemHelper.phoneCheck(event.getNewValue())){
-                masters.setPhone(event.getNewValue());
-                changeCheck(masters, "Телефон");
+                try {
+                    if(!mastersManager.getByPhone(phone_enter.getText())){
+                        masters.setPhone(event.getNewValue());
+                        changeCheck(masters, event.getNewValue());
+                    } else systemHelper.showErrorMessage("Ошибка", "Мастер с таким номером телефона уже существует!");
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             } else {
                 systemHelper.showErrorMessage("Ошибка", "Неверный формат телефона!");
                 try {
@@ -154,6 +172,13 @@ public class MastersController {
                     throwables.printStackTrace();
                 }
             }
+        });
+
+        shopColumn.setOnEditCommit((TableColumn.CellEditEvent<Masters, AutoShops> event) -> {
+            TablePosition<Masters, AutoShops> pos = event.getTablePosition();
+            Masters masters = event.getTableView().getItems().get(pos.getRow());
+            masters.setAutoShopId(event.getNewValue().getShop_number());
+            changeCheck(masters, event.getNewValue().toString());
         });
     }
 
@@ -194,22 +219,24 @@ public class MastersController {
         }
     }
 
-    void addMaster() {
+    void addMaster() throws SQLException {
         if(!name_enter.getText().isEmpty() && !phone_enter.getText().isEmpty() && shop_enter.getValue() != null){
             if (systemHelper.phoneCheck(phone_enter.getText())){
-                Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Мастер").showAndWait();
-                if (option.get() == ButtonType.OK) {
-                    try {
-                        mastersManager.add(new Masters(name_enter.getText(), phone_enter.getText(), shop_enter.getValue().getShop_number()));
-                        masters_table.setItems(mastersManager.getAll());
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                    }
-                    System.out.println("Add new!");
-                }
-            } else {
-                systemHelper.showErrorMessage("Ошибка", "Неверный формат телефона!");
-            }
+                if(!mastersManager.getByPhone(phone_enter.getText())){
+                    if(systemHelper.fullNameCheck(name_enter.getText())){
+                        Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Мастер").showAndWait();
+                        if (option.get() == ButtonType.OK) {
+                            try {
+                                mastersManager.add(new Masters(name_enter.getText(), phone_enter.getText(), shop_enter.getValue().getShop_number()));
+                                masters_table.setItems(mastersManager.getAll());
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+                            System.out.println("Add new!");
+                        }
+                    } else systemHelper.showErrorMessage("Ошибка", "Неверные ФИО!");
+                } else systemHelper.showErrorMessage("Ошибка", "Мастер с таким номером телефона уже существует!");
+            } else systemHelper.showErrorMessage("Ошибка", "Неверный формат телефона!");
         } else {
             systemHelper.showErrorMessage("Ошибка", "Введите данные!");
         }

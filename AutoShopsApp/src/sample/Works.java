@@ -32,7 +32,8 @@ public class Works
             for(String consumableName: consumablesManager.getByWorkId(getWorkId())){
                 this.consumables+=consumableName+", ";
             }
-            this.consumables = this.consumables.substring(0, this.consumables.length()-2);
+            if(!this.consumables.isEmpty())
+                this.consumables = this.consumables.substring(0, this.consumables.length()-2);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

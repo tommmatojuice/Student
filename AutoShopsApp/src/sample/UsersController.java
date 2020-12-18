@@ -2,6 +2,8 @@ package sample;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -99,6 +101,8 @@ public class UsersController {
     private void initElements() throws SQLException {
         master_enter.setItems(mastersManager.getWithoutAuth());
         user_label.setText(userName);
+        systemHelper.initMenu(userName, 0, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+                consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
     private void initButtons(){
@@ -116,10 +120,10 @@ public class UsersController {
         Users user = users_table.getSelectionModel().getSelectedItem();
         if (user != null){
             Optional<ButtonType> option = systemHelper.showConfirmMessage("Удалить запись", "Вы действительно хотите удалить запись?", null).showAndWait();
-            if (option.isPresent()) {
+            if (option.get() == ButtonType.OK) {
                 try {
                     usersManager.deleteById(user.getId());
-                    users_table.setItems(usersManager.getAll());
+                    searchTable();
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
@@ -159,7 +163,8 @@ public class UsersController {
             changeCheck(user, event.getNewValue().toString());
         });
 
-        users_table.setItems(usersManager.getAll());
+        searchTable();
+//        users_table.setItems(usersManager.getAll());
         users_table.getColumns().addAll(masterColumn, loginColumn, passColumn);
         users_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         users_table.setEditable(true);
@@ -167,21 +172,21 @@ public class UsersController {
 
     private void changeCheck(Users user, String message){
         Optional<ButtonType> option = systemHelper.showConfirmMessage("Изменить поле", "Вы действительно хотите изменить поле?", message).showAndWait();
-        if (option.isPresent()) {
+        if (option.get() == ButtonType.OK) {
             try {
                 usersManager.update(user);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
             try {
-                users_table.setItems(usersManager.getAll());
+                searchTable();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
             System.out.println("Item change!");
         } else{
             try {
-                users_table.setItems(usersManager.getAll());
+                searchTable();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -190,12 +195,12 @@ public class UsersController {
 
     private void addUser() throws SQLException {
         if(master_enter.getValue() != null){
-            Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Ремонтная работа").showAndWait();
-            if (option.isPresent()) {
+            Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Пользователь").showAndWait();
+            if (option.get() == ButtonType.OK) {
                 try {
                     Users user = new Users(getRandomLoginOrPass(12), getRandomLoginOrPass(12), master_enter.getValue().getMasterId());
                     usersManager.add(user);
-                    users_table.setItems(usersManager.getAll());
+                    searchTable();
                     copyToClipboard(user);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
@@ -224,5 +229,34 @@ public class UsersController {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
         }
+    }
+
+    public void searchTable() throws SQLException {
+        FilteredList<Users> filteredList = new FilteredList<>(usersManager.getAll(), b -> true);
+
+        search_enter.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredList.setPredicate(user -> {
+                if(newValue == null || newValue.isEmpty()){
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+                try {
+                    if(mastersManager.getById(user.getMaster()).toString().toLowerCase().contains(lowerCaseFilter)){
+                        return true;
+                    } else if(user.getLogin().toLowerCase().contains(lowerCaseFilter)){
+                        return true;
+                    } else if(user.getPassword().toLowerCase().contains(lowerCaseFilter)){
+                        return true;
+                    } else return false;
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+                return false;
+            });
+        });
+        SortedList<Users> sortedList = new SortedList<>(filteredList);
+        sortedList.comparatorProperty().bind(users_table.comparatorProperty());
+        users_table.setItems(sortedList);
     }
 }

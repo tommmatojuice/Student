@@ -95,4 +95,16 @@ public class CustomerManager
             return null;
         }
     }
+
+    public boolean getByPhone(String phone) throws SQLException {
+        try(Connection c = systemHelper.getConnection())
+        {
+            String sql = "SELECT * FROM customer WHERE phone_number=?";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setString(1, phone);
+            ResultSet resultSet = statement.executeQuery();
+
+            return resultSet.next();
+        }
+    }
 }

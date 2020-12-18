@@ -78,4 +78,46 @@ public class ContractManager
             return null;
         }
     }
+
+    public Contracts getById(int id) throws SQLException {
+        try(Connection c = systemHelper.getConnection())
+        {
+            String sql = "SELECT * FROM contract WHERE contract_number=?";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                return new Contracts(resultSet.getInt("contract_number"),
+                        resultSet.getDate("contract_date_open"),
+                        resultSet.getDate("contract_date_close"),
+                        StatusEnum.valueOf(resultSet.getString("contract_status")),
+                        resultSet.getString("state_number"));
+            }
+            return null;
+        }
+    }
+
+    public ObservableList<Contracts>  getByMaster(int masterId) throws SQLException {
+        System.out.println(masterId);
+        try(Connection c = systemHelper.getConnection())
+        {
+            String sql = "SELECT contract.contract_number, contract.contract_date_open, contract.contract_date_close, contract.contract_status, " +
+                    "contract.state_number FROM repair_works, contract WHERE repair_works.master_id = ? " +
+                    "and repair_works.contract_number = contract.contract_number;";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setInt(1, masterId);
+
+            ObservableList<Contracts> contacts = FXCollections.observableArrayList();
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                contacts.add(new Contracts(resultSet.getInt("contract_number"),
+                        resultSet.getDate("contract_date_open"),
+                        resultSet.getDate("contract_date_close"),
+                        StatusEnum.valueOf(resultSet.getString("contract_status")),
+                        resultSet.getString("state_number")));
+            }
+            return contacts;
+        }
+    }
 }

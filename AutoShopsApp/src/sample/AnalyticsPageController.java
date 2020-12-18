@@ -68,10 +68,9 @@ public class AnalyticsPageController {
     private void initButtons() {
         works_button.setOnAction(event -> {
             try {
-                works_button.getScene().getWindow().hide();
-                FXMLLoader loader = systemHelper.openWindow("analyticsTable.fxml",  works_button.getScene().getWidth());
+                FXMLLoader loader = systemHelper.showScene("analyticsTable.fxml");
                 AnalyticsTableController controller = loader.getController();
-                controller.initialize(1, userName);
+                controller.initialize(1, userName, 0);
             } catch (IOException | SQLException exception) {
                 exception.printStackTrace();
             }
@@ -79,10 +78,9 @@ public class AnalyticsPageController {
 
         consumables_button.setOnAction(event -> {
             try {
-                consumables_button.getScene().getWindow().hide();
-                FXMLLoader loader = systemHelper.openWindow("analyticsTable.fxml",  works_button.getScene().getWidth());
+                FXMLLoader loader = systemHelper.showScene("analyticsTable.fxml");
                 AnalyticsTableController controller = loader.getController();
-                controller.initialize(2, userName);
+                controller.initialize(2, userName, 0);
             } catch (IOException | SQLException exception) {
                 exception.printStackTrace();
             }
@@ -91,7 +89,7 @@ public class AnalyticsPageController {
 
     public void setUserName(){
         user_label.setText(userName);
-        systemHelper.initMenu(userName, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+        systemHelper.initMenu(userName, 0, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 }

@@ -12,6 +12,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
@@ -52,6 +54,9 @@ public class ContractsController
     private JFXButton shops_button;
 
     @FXML
+    private JFXButton delete_button;
+
+    @FXML
     private JFXButton masters_button;
 
     @FXML
@@ -81,22 +86,59 @@ public class ContractsController
     @FXML
     private JFXButton users_button;
 
+    @FXML
+    private ImageView shops_image;
+
+    @FXML
+    private ImageView masters_image;
+
     private final SystemHelper systemHelper = new SystemHelper();
     private final CarsManager carsManager = new CarsManager();
     private final CustomerManager customerManager = new CustomerManager();
     private final ContractManager contractManager = new ContractManager();
     private String userName;
+    private int role;
 
     @FXML
-    void initialize() throws SQLException {
+    void initialize(String userName, int role) throws SQLException {
+        this.userName = userName;
+        this.role = role;
         setTable();
         initButtons();
         initElements();
+        System.out.println("role "+role);
     }
 
     private void initElements() throws SQLException {
         status_enter.getItems().setAll(StatusEnum.values());
         auto_number_enter.setItems(carsManager.getAll());
+        user_label.setText(userName);
+        systemHelper.initMenu(userName, role, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+                consum_button, work_button, cintract_button, service_button, math_button, users_button);
+        if(role != 0){
+            model_button.setVisible(false);
+            cars_button.setVisible(false);
+            client_button.setVisible(false);
+            consum_button.setVisible(false);
+            work_button.setVisible(false);
+            cintract_button.setVisible(false);
+            service_button.setVisible(false);
+            math_button.setVisible(false);
+            users_button.setVisible(false);
+
+            shops_button.setText("Контракты");
+            masters_button.setText("Ремонтные работы");
+
+            close_data_enter.setVisible(false);
+            auto_number_enter.setVisible(false);
+            status_enter.setVisible(false);
+            open_data_enter.setVisible(false);
+            add_button.setVisible(false);
+            delete_button.setVisible(false);
+
+            shops_image.setImage(new Image("sample/baseline_library_books_white_48dp.png"));
+            masters_image.setImage(new Image("sample/baseline_build_white_48dp.png"));
+        }
     }
 
     @FXML
@@ -104,7 +146,7 @@ public class ContractsController
         Contracts contract = contract_table.getSelectionModel().getSelectedItem();
         if (contract != null){
             Optional<ButtonType> option = systemHelper.showConfirmMessage("Удалить запись", "Вы действительно хотите удалить запись?", null).showAndWait();
-            if (option.isPresent()) {
+            if (option.get() == ButtonType.OK) {
                 try {
                     contractManager.deleteById(contract.getId());
                     searchTable();
@@ -116,13 +158,6 @@ public class ContractsController
         } else {
             systemHelper.showErrorMessage("Ошибка", "Выберите запись!");
         }
-    }
-
-    public void setUserName(String name){
-        this.userName = name;
-        user_label.setText(name);
-        systemHelper.initMenu(name, out_button, shops_button, masters_button, model_button, cars_button, client_button,
-                consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
     private void initButtons(){
@@ -152,7 +187,7 @@ public class ContractsController
                     public void handle(MouseEvent event) {
                         if (event.getClickCount() > 1) {
                             try {
-                                systemHelper.doubleClickOnContract(userName, cell.getTableView().getItems().get(cell.getIndex()), shops_button);
+                                systemHelper.doubleClickOnContract(userName, role, cell.getTableView().getItems().get(cell.getIndex()), shops_button);
                             } catch (SQLException throwables) {
                                 throwables.printStackTrace();
                             }
@@ -165,11 +200,9 @@ public class ContractsController
 
         TableColumn<Contracts, Date> openDateColumn = new TableColumn<>("Дата открытия контракта");
         openDateColumn.setCellValueFactory(new PropertyValueFactory<>("dateOpen"));
-        openDateColumn.setCellFactory(TextFieldTableCell.forTableColumn(systemHelper.getStringConverter()));
 
         TableColumn<Contracts, Date> closeDateColumn = new TableColumn<>("Дата закрытия контракта");
         closeDateColumn.setCellValueFactory(new PropertyValueFactory<>("dateClose"));
-        closeDateColumn.setCellFactory(TextFieldTableCell.forTableColumn(systemHelper.getStringConverter()));
 
         TableColumn<Contracts, StatusEnum> statusColumn = new TableColumn<>("Статус");
         statusColumn.setCellValueFactory(param -> {
@@ -178,7 +211,6 @@ public class ContractsController
             StatusEnum status = StatusEnum.valueOf(statusValue);
             return new SimpleObjectProperty<StatusEnum>(status);
         });
-        statusColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(StatusEnum.values())));
 
         TableColumn<Contracts, Cars> carColumn = new TableColumn<>("Госномер автомобиля");
         carColumn.setCellValueFactory(param -> {
@@ -192,7 +224,6 @@ public class ContractsController
             }
             return new SimpleObjectProperty<>(car);
         });
-        carColumn.setCellFactory(ComboBoxTableCell.forTableColumn(carsManager.getAll()));
 
         TableColumn<Contracts, Customer> customerColumn = new TableColumn<>("Клиент");
         customerColumn.setCellValueFactory(param -> {
@@ -212,33 +243,40 @@ public class ContractsController
             return new SimpleObjectProperty<>(customer);
         });
 
-        openDateColumn.setOnEditCommit((TableColumn.CellEditEvent<Contracts, Date> event) ->{
-            TablePosition<Contracts, Date> pos = event.getTablePosition();
-            Contracts contract = event.getTableView().getItems().get(pos.getRow());
-            contract.setDateOpen(event.getNewValue());
-            changeCheck(contract, event.getNewValue().toString());
-        });
+        if(role == 0){
+            openDateColumn.setCellFactory(TextFieldTableCell.forTableColumn(systemHelper.getStringConverter()));
+            closeDateColumn.setCellFactory(TextFieldTableCell.forTableColumn(systemHelper.getStringConverter()));
+            statusColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(StatusEnum.values())));
+            carColumn.setCellFactory(ComboBoxTableCell.forTableColumn(carsManager.getAll()));
 
-        closeDateColumn.setOnEditCommit((TableColumn.CellEditEvent<Contracts, Date> event) ->{
-            TablePosition<Contracts, Date> pos = event.getTablePosition();
-            Contracts contract = event.getTableView().getItems().get(pos.getRow());
-            contract.setDateClose(event.getNewValue());
-            changeCheck(contract, event.getNewValue().toString());
-        });
+            openDateColumn.setOnEditCommit((TableColumn.CellEditEvent<Contracts, Date> event) ->{
+                TablePosition<Contracts, Date> pos = event.getTablePosition();
+                Contracts contract = event.getTableView().getItems().get(pos.getRow());
+                contract.setDateOpen(event.getNewValue());
+                changeCheck(contract, event.getNewValue().toString());
+            });
 
-        statusColumn.setOnEditCommit((TableColumn.CellEditEvent<Contracts, StatusEnum> event) ->{
-            TablePosition<Contracts, StatusEnum> pos = event.getTablePosition();
-            Contracts contract = event.getTableView().getItems().get(pos.getRow());
-            contract.setStatusEnum(event.getNewValue());
-            changeCheck(contract, event.getNewValue().toString());
-        });
+            closeDateColumn.setOnEditCommit((TableColumn.CellEditEvent<Contracts, Date> event) ->{
+                TablePosition<Contracts, Date> pos = event.getTablePosition();
+                Contracts contract = event.getTableView().getItems().get(pos.getRow());
+                contract.setDateClose(event.getNewValue());
+                changeCheck(contract, event.getNewValue().toString());
+            });
 
-        carColumn.setOnEditCommit((TableColumn.CellEditEvent<Contracts, Cars> event) ->{
-            TablePosition<Contracts, Cars> pos = event.getTablePosition();
-            Contracts contract = event.getTableView().getItems().get(pos.getRow());
-            contract.setStateNumber(event.getNewValue().getStateNumber());
-            changeCheck(contract, event.getNewValue().getStateNumber());
-        });
+            statusColumn.setOnEditCommit((TableColumn.CellEditEvent<Contracts, StatusEnum> event) ->{
+                TablePosition<Contracts, StatusEnum> pos = event.getTablePosition();
+                Contracts contract = event.getTableView().getItems().get(pos.getRow());
+                contract.setStatusEnum(event.getNewValue());
+                changeCheck(contract, event.getNewValue().toString());
+            });
+
+            carColumn.setOnEditCommit((TableColumn.CellEditEvent<Contracts, Cars> event) ->{
+                TablePosition<Contracts, Cars> pos = event.getTablePosition();
+                Contracts contract = event.getTableView().getItems().get(pos.getRow());
+                contract.setStateNumber(event.getNewValue().getStateNumber());
+                changeCheck(contract, event.getNewValue().getStateNumber());
+            });
+        }
 
         searchTable();
         contract_table.getColumns().addAll(numberColumn, openDateColumn, closeDateColumn, statusColumn, carColumn, customerColumn);
@@ -248,7 +286,7 @@ public class ContractsController
 
     private void changeCheck(Contracts contract, String message){
         Optional<ButtonType> option = systemHelper.showConfirmMessage("Изменить поле", "Вы действительно хотите изменить поле?", message).showAndWait();
-        if (option.isPresent()) {
+        if (option.get() == ButtonType.OK) {
             try {
                 contractManager.update(contract);
             } catch (SQLException throwables) {
@@ -265,12 +303,11 @@ public class ContractsController
     }
 
     private void addContract(){
-        if(!open_data_enter.getValue().toString().isEmpty() && status_enter.getItems() != null && auto_number_enter.getItems() != null){
+        if(open_data_enter.getValue() != null && status_enter.getValue() != null && auto_number_enter.getValue() != null){
             Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Контракт").showAndWait();
             if (option.isPresent()) {
                 try {
                     if(close_data_enter.getValue() != null){
-                        System.out.println(1);
                         contractManager.add(new Contracts(Date.valueOf(open_data_enter.getValue()), Date.valueOf(close_data_enter.getValue()),
                                 status_enter.getValue(), auto_number_enter.getValue().getStateNumber()));
                     } else {
@@ -287,7 +324,10 @@ public class ContractsController
     }
 
     public void searchTable() throws SQLException {
-        FilteredList<Contracts> filteredList = new FilteredList<>(contractManager.getAll(), b -> true);
+        FilteredList<Contracts> filteredList;
+        if (role != 0) {
+            filteredList = new FilteredList<>(contractManager.getByMaster(role), b -> true);
+        } else  filteredList = new FilteredList<>(contractManager.getAll(), b -> true);
 
         search_enter.textProperty().addListener((observable, oldValue, newValue) -> filteredList.setPredicate(contract -> {
             try

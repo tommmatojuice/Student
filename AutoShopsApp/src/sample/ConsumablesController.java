@@ -96,7 +96,7 @@ public class ConsumablesController {
 
     public void setUserName(String name){
         user_label.setText(name);
-        systemHelper.initMenu(name, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+        systemHelper.initMenu(name, 0, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
@@ -138,12 +138,11 @@ public class ConsumablesController {
 
         TableColumn<Consumables,Double> priceColumn = new TableColumn<>("Стоимость");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("consumablePrice"));
-        priceColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        priceColumn.setCellFactory(TextFieldTableCell.forTableColumn(systemHelper.getDoubleConverter("Неверно введена стоимость!")));
 
         TableColumn<Consumables,String> producerColumn = new TableColumn<>("Производитель");
         producerColumn.setCellValueFactory(new PropertyValueFactory<>("consumableProducer"));
         producerColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-
 
         nameColumn.setOnEditCommit((TableColumn.CellEditEvent<Consumables, String> event) ->{
             TablePosition<Consumables, String> pos = event.getTablePosition();
@@ -180,7 +179,6 @@ public class ConsumablesController {
             changeCheck(consumable, event.getNewValue());
         });
 
-//        searchTable();
         consumables_table.setItems(consumablesManager.getAll());
         consumables_table.getColumns().addAll(nameColumn, typeColumn, unitColumn, priceColumn, producerColumn);
         consumables_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -208,17 +206,19 @@ public class ConsumablesController {
     private void addСonsumable(){
         if(!name_enter.getText().isEmpty() && type_enter.getItems() != null
                 && unit_enter.getItems() != null && !price_enter.getText().isEmpty() && !producer_enter.getText().isEmpty()){
-            Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Расходник").showAndWait();
-            if (option.get() == ButtonType.OK) {
-                try {
-                    consumablesManager.add(new Consumables(name_enter.getText(), type_enter.getValue(), unit_enter.getValue(),
-                            Double.parseDouble(price_enter.getText()), producer_enter.getText()));
-                    consumables_table.setItems(consumablesManager.getAll());
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+            if(systemHelper.priceCheck(price_enter.getText())){
+                Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Расходник").showAndWait();
+                if (option.get() == ButtonType.OK) {
+                    try {
+                        consumablesManager.add(new Consumables(name_enter.getText(), type_enter.getValue(), unit_enter.getValue(),
+                                Double.parseDouble(price_enter.getText()), producer_enter.getText()));
+                        consumables_table.setItems(consumablesManager.getAll());
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+                    System.out.println("Add new!");
                 }
-                System.out.println("Add new!");
-            }
+            } else systemHelper.showErrorMessage("Ошибка", "Неверно введена стоимость!");
         } else systemHelper.showErrorMessage("Ошибка", "Введите данные!");
     }
 

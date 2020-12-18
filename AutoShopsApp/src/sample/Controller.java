@@ -24,7 +24,8 @@ public class Controller{
     @FXML
     private JFXButton main_enter_button;
 
-    private SystemHelper helper = new SystemHelper();
+    private SystemHelper systemHelper = new SystemHelper();
+    private MastersManager mastersManager = new MastersManager();
 
     @FXML
     void initialize() {
@@ -33,32 +34,40 @@ public class Controller{
             String password = main_pass.getText().trim();
             System.out.println(login + " " + password);
             if(main_login.getText().trim().length()>0 && main_pass.getText().trim().length()>0){
-                checkAuth(login, password);
+                try {
+                    checkAuth(login, password);
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
             } else {
-                helper.showErrorMessage("Ошибка", "Введите логин и пароль!");
+                systemHelper.showErrorMessage("Ошибка", "Введите логин и пароль!");
             }
         });
     }
 
-    public void checkAuth(String login, String pass){
-        try(Connection c = helper.getConnection()) {
-            String sql = "SELECT name FROM users where login=? AND password=?";
+    public void checkAuth(String login, String pass) throws IOException {
+        try(Connection c = systemHelper.getConnection()) {
+            String sql = "SELECT name, master FROM users where login=? AND password=?";
             PreparedStatement statement = c.prepareStatement(sql);
             statement.setString(1, login);
             statement.setString(2, pass);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()){
-                helper.setUser(resultSet.getString("name"));
                 main_enter_button.getScene().getWindow().hide();
-                try {
-                    FXMLLoader loader = helper.openWindow("/sample/autoshops.fxml", main_enter_button.getScene().getWidth());
+                if(resultSet.getString("name") == null){
+                    System.out.println("master");
+                    FXMLLoader loader = systemHelper.showScene("contracts.fxml");
+                    ContractsController controller = loader.getController();
+                    System.out.println(resultSet.getInt("master"));
+                    controller.initialize(mastersManager.getById(resultSet.getInt("master")).getName(), resultSet.getInt("master"));
+                } else {
+                    System.out.println("admin");
+                    FXMLLoader loader = systemHelper.showScene("/sample/autoshops.fxml");
                     AutoshopsController controllerEditBook = loader.getController();
                     controllerEditBook.setUserLabel(resultSet.getString("name"));
-                } catch (IOException exception) {
-                    exception.printStackTrace();
                 }
             } else {
-                helper.showErrorMessage("Ошибка", "Неверный логин или пароль!");
+                systemHelper.showErrorMessage("Ошибка", "Неверный логин или пароль!");
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

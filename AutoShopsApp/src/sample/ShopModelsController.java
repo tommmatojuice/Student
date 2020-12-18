@@ -67,7 +67,7 @@ public class ShopModelsController {
             Optional<ButtonType> option = systemHelper.showConfirmMessage("Удалить запись", "Вы действительно хотите удалить запись?", null).showAndWait();
             if (option.get() == ButtonType.OK) {
                 try {
-                    carModelManager.deleteById(carModel.getModelId());
+                    carModelManager.deleteShopHasModel(autoShop.getShop_number(), carModel.getModelId());
                     models_table.getItems().removeAll(models_table.getSelectionModel().getSelectedItem());
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
@@ -86,10 +86,10 @@ public class ShopModelsController {
     }
 
     private void initElements() throws SQLException {
-        model_enter.setItems(carModelManager.getAll());
+        model_enter.setItems(carModelManager.getNewModels(autoShop.getShop_number()));
         shop_info.setText("Автомастреская: " + autoShop.getName() + "\n" + "Адрес: " + autoShop.getAddress());
         user_label.setText(userName);
-        systemHelper.initMenu(userName, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+        systemHelper.initMenu(userName, 0, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
@@ -110,8 +110,8 @@ public class ShopModelsController {
     }
 
     private void addCarModel(){
-        if(model_enter.getItems() != null){
-            Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Клиент").showAndWait();
+        if(model_enter.getValue() != null){
+            Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Модель автомобиля").showAndWait();
             if (option.get() == ButtonType.OK) {
                 try {
                     System.out.println(this.autoShop.getShop_number());

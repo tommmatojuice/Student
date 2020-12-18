@@ -131,7 +131,7 @@ public class CarsController {
     public void setUserName(String name){
         userName = name;
         user_label.setText(name);
-        systemHelper.initMenu(name, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+        systemHelper.initMenu(name, 0, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
@@ -153,32 +153,11 @@ public class CarsController {
 
         TableColumn<Cars, Date> yearColumn = new TableColumn<>("Год выпуска");
         yearColumn.setCellValueFactory(new PropertyValueFactory<>("yearOfIssue"));
-        yearColumn.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<Date>() {
-            String pattern = "yyyy-MM-dd";
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
-
-            @Override
-            public String toString(Date date) {
-                if (date != null) {
-                    return dateFormatter.format(date.toLocalDate());
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public Date fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                   return Date.valueOf(string);
-                } else {
-                    return null;
-                }
-            }
-        }));
+        yearColumn.setCellFactory(TextFieldTableCell.forTableColumn(systemHelper.getStringConverter()));
 
         TableColumn<Cars,Integer> dateSheetNumberColumn = new TableColumn<>("Номер техпаспорта");
         dateSheetNumberColumn.setCellValueFactory(new PropertyValueFactory<>("dateSheetNumber"));
-        dateSheetNumberColumn.setCellFactory(TextFieldTableCell .forTableColumn(new IntegerStringConverter()));
+        dateSheetNumberColumn.setCellFactory(TextFieldTableCell.forTableColumn(systemHelper.getIntegerConverter("Неверно введен номер техпаспорта!")));
 
         TableColumn<Cars, CarModel> modelColumn = new TableColumn<>("Модель");
         modelColumn.setCellValueFactory(new Callback<>() {
@@ -218,28 +197,28 @@ public class CarsController {
             TablePosition<Cars, Date> pos = event.getTablePosition();
             Cars car = event.getTableView().getItems().get(pos.getRow());
             car.setYearOfIssue(event.getNewValue());
-            changeCheck(car, "Год выпуска");
+            changeCheck(car, event.getNewValue().toString());
         });
 
         dateSheetNumberColumn.setOnEditCommit((TableColumn.CellEditEvent<Cars, Integer> event) ->{
             TablePosition<Cars, Integer> pos = event.getTablePosition();
             Cars car = event.getTableView().getItems().get(pos.getRow());
             car.setDateSheetNumber(event.getNewValue());
-            changeCheck(car, "Номер техпаспорта");
+            changeCheck(car, event.getNewValue().toString());
         });
 
         modelColumn.setOnEditCommit((TableColumn.CellEditEvent<Cars, CarModel> event) -> {
             TablePosition<Cars, CarModel> pos = event.getTablePosition();
             Cars car = event.getTableView().getItems().get(pos.getRow());
             car.setModelId(event.getNewValue().getModelId());
-            changeCheck(car, "Марка");
+            changeCheck(car, event.getNewValue().toString());
         });
 
         customerColumn.setOnEditCommit((TableColumn.CellEditEvent<Cars, Customer> event) -> {
             TablePosition<Cars, Customer> pos = event.getTablePosition();
             Cars car = event.getTableView().getItems().get(pos.getRow());
             car.setCustomerId(event.getNewValue().getId());
-            changeCheck(car, "Владелец");
+            changeCheck(car, event.getNewValue().toString());
         });
 
         searchTable();
@@ -270,8 +249,8 @@ public class CarsController {
         if(!state_number_enter.getText().isEmpty() && !year_of_issur_enter.getValue().toString().isEmpty()
                 && !date_sheet_number_enter.getText().isEmpty() && model_enter.getItems() != null && customer_enter.getItems() != null){
             if (systemHelper.stateNumberCheck(state_number_enter.getText())){
-                if (date_sheet_number_enter.getText().length() == 6){
-                    Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Клиент").showAndWait();
+                if (systemHelper.dateSheetNumberCheck(date_sheet_number_enter.getText())){
+                    Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Автомобиль").showAndWait();
                     if (option.get() == ButtonType.OK) {
                         try {
                             if (this.customer == null){
@@ -315,7 +294,7 @@ public class CarsController {
                         return true;
                     } else if(customerManager.getById(car.getCustomerId()).toString().toLowerCase().contains(lowerCaseFilter)){
                         return true;
-                    } else return false;
+                    } else return car.getYearOfIssue().toString().toLowerCase().contains(lowerCaseFilter);
                 } catch (Exception e){
                     e.printStackTrace();
                 }

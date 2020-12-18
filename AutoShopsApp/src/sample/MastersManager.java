@@ -108,7 +108,6 @@ public class MastersManager
         }
     }
 
-    //SELECT master_id, full_name, phone_number, shop_number from masters LEFT JOIN users on masters.master_id = users.master where users.master is NULL
     public ObservableList<Masters> getWithoutAuth() throws SQLException {
         try(Connection c = systemHelper.getConnection()){
             String sql = "SELECT master_id, full_name, phone_number, shop_number from masters LEFT JOIN " +
@@ -117,6 +116,40 @@ public class MastersManager
 
             ObservableList<Masters> masters = FXCollections.observableArrayList();
             ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()){
+                masters.add(new Masters(
+                        resultSet.getInt("master_id"),
+                        resultSet.getString("full_name"),
+                        resultSet.getString("phone_number"),
+                        resultSet.getInt("shop_number")));
+            }
+            return masters;
+        }
+    }
+
+    public boolean getByPhone(String phone) throws SQLException {
+        System.out.println(phone);
+        try(Connection c = systemHelper.getConnection()){
+            String sql = "SELECT * FROM masters WHERE phone_number=?";
+            PreparedStatement s = c.prepareStatement(sql);
+            s.setString(1, phone);
+            ResultSet resultSet = s.executeQuery();
+
+            return resultSet.next();
+        }
+    }
+
+    public ObservableList<Masters> getByModel(int modelId) throws SQLException {
+        try(Connection c = systemHelper.getConnection()){
+            String sql = "select master_id, full_name, phone_number, masters.shop_number from repaired_models, auto_repair_shops, masters where " +
+                    "repaired_models.shop_number = auto_repair_shops.shop_number and masters.shop_number = auto_repair_shops.shop_number and " +
+                    "repaired_models.model_id = ?";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setInt(1, modelId);
+
+            ObservableList<Masters> masters = FXCollections.observableArrayList();
+            ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()){
                 masters.add(new Masters(

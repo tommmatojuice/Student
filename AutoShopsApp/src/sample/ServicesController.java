@@ -106,7 +106,7 @@ public class ServicesController
     public void setUserName(String name){
         userName = name;
         user_label.setText(name);
-        systemHelper.initMenu(name, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+        systemHelper.initMenu(name, 0, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
@@ -126,7 +126,7 @@ public class ServicesController
 
         TableColumn<Services, Double> priceColumn = new TableColumn<>("Стоимость");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-        priceColumn.setCellFactory(TextFieldTableCell .forTableColumn(new DoubleStringConverter()));
+        priceColumn.setCellFactory(TextFieldTableCell .forTableColumn(systemHelper.getDoubleConverter("Неверно введена стоимость услуги!")));
 
         services_table.setItems(servicesManager.getAll());
         services_table.getColumns().addAll(typeColumn, priceColumn);
@@ -137,7 +137,7 @@ public class ServicesController
             TablePosition<Services, String> pos = event.getTablePosition();
             Services services = event.getTableView().getItems().get(pos.getRow());
             services.setType(event.getNewValue());
-            changeCheck(services, "Тип ремонта");
+            changeCheck(services, event.getNewValue());
         });
 
         try{
@@ -145,7 +145,7 @@ public class ServicesController
                 TablePosition<Services, Double> pos = event.getTablePosition();
                 Services services = event.getTableView().getItems().get(pos.getRow());
                 services.setPrice(event.getNewValue());
-                changeCheck(services, "Стоимость");
+                changeCheck(services, event.getNewValue().toString());
             });
         } catch (NumberFormatException e){
             systemHelper.showErrorMessage("Ошибка", "Неверно введена стоимость!");
@@ -173,7 +173,7 @@ public class ServicesController
     private void addService(){
         if(!type_enter.getText().isEmpty() && !price_enter.getText().isEmpty()){
             if (systemHelper.priceCheck(price_enter.getText())){
-                Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Мастер").showAndWait();
+                Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Услуга").showAndWait();
                 if (option.get() == ButtonType.OK) {
                     try {
                         servicesManager.add(new Services(type_enter.getText(), Double.valueOf(price_enter.getText())));

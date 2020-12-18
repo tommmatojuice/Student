@@ -18,6 +18,7 @@ public class WorksManager
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
+                System.out.println(resultSet.getInt("contract_number"));
                 works.add(new Works(resultSet.getInt("work_id"),
                         resultSet.getInt("service_id"),
                         resultSet.getInt("contract_number"),
@@ -46,6 +47,28 @@ public class WorksManager
             String sql = "SELECT * FROM repair_works WHERE contract_number=?";
             PreparedStatement statement = c.prepareStatement(sql);
             statement.setInt(1, contractNumber);
+
+            ObservableList<Works> works = FXCollections.observableArrayList();
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                works.add(new Works(resultSet.getInt("work_id"),
+                        resultSet.getInt("service_id"),
+                        resultSet.getInt("contract_number"),
+                        resultSet.getInt("master_id"),
+                        resultSet.getDate("receipt_date"),
+                        resultSet.getDate("completion_date"),
+                        resultSet.getDate("actual_completion_date")));
+            }
+            return works;
+        }
+    }
+
+    public ObservableList<Works> getByMaster(int masterId) throws SQLException {
+        try(Connection c = systemHelper.getConnection()){
+            String sql = "SELECT * FROM repair_works WHERE master_id=?";
+            PreparedStatement statement = c.prepareStatement(sql);
+            statement.setInt(1, masterId);
 
             ObservableList<Works> works = FXCollections.observableArrayList();
             ResultSet resultSet = statement.executeQuery();

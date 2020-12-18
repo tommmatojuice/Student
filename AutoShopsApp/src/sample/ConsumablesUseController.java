@@ -11,6 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
 
@@ -83,6 +85,12 @@ public class ConsumablesUseController {
     @FXML
     private JFXButton users_button;
 
+    @FXML
+    private ImageView shops_image;
+
+    @FXML
+    private ImageView masters_image;
+
     private final SystemHelper systemHelper = new SystemHelper();
     private final WorksManager worksManager = new WorksManager();
     private final ConsumablesManager consumablesManager = new ConsumablesManager();
@@ -94,12 +102,14 @@ public class ConsumablesUseController {
     private Contracts contract;
     private String userName;
     private Works work;
+    private int role;
 
     @FXML
-    void initialize(String userName, Contracts contract, Works work) throws SQLException {
+    void initialize(String userName, int role, Contracts contract, Works work) throws SQLException {
         this.contract = contract;
         this.userName = userName;
         this.work = work;
+        this.role = role;
         setTable();
         initButtons();
         initElements();
@@ -110,7 +120,7 @@ public class ConsumablesUseController {
         ConsumablesUse consumablesUse = consumables_table.getSelectionModel().getSelectedItem();
         if (consumablesUse != null){
             Optional<ButtonType> option = systemHelper.showConfirmMessage("Удалить запись", "Вы действительно хотите удалить запись?", null).showAndWait();
-            if (option.isPresent()) {
+            if (option.get() == ButtonType.OK) {
                 try {
                     consumablesUseManager.deleteByID(consumablesUse.getConsumableUseId());
                     consumables_table.setItems(consumablesUseManager.getByWorkId(this.work.getWorkId()));
@@ -143,8 +153,34 @@ public class ConsumablesUseController {
         cost_label.setText("Тип ремонта: " + servicesManager.getById(work.getServiceId()).getType());
         user_label.setText(userName);
 
-        systemHelper.initMenu(userName, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+        systemHelper.initMenu(userName, role, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
+
+        if(role != 0){
+            model_button.setVisible(false);
+            cars_button.setVisible(false);
+            client_button.setVisible(false);
+            consum_button.setVisible(false);
+            work_button.setVisible(false);
+            cintract_button.setVisible(false);
+            service_button.setVisible(false);
+            math_button.setVisible(false);
+            users_button.setVisible(false);
+
+            shops_button.setText("Контракты");
+            masters_button.setText("Ремонтные работы");
+
+            shops_image.setImage(new Image("sample/baseline_library_books_white_48dp.png"));
+            masters_image.setImage(new Image("sample/baseline_build_white_48dp.png"));
+
+            if(work.getMasterId() != role){
+                name_enter.setVisible(false);
+                type_enter.setVisible(false);
+                number_enter.setVisible(false);
+                add_button.setVisible(false);
+                delete_button.setVisible(false);
+            }
+        }
     }
 
     private void initButtons(){
@@ -152,8 +188,6 @@ public class ConsumablesUseController {
             addConsumableUse();
         });
     }
-
-
 
     private void setTable() throws SQLException
     {
@@ -173,7 +207,6 @@ public class ConsumablesUseController {
 //            }
 //        });
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-        typeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(TypesEnum.values())));
 
         TableColumn<ConsumablesUse, Consumables> nameColumn = new TableColumn<>("Название");
         nameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ConsumablesUse, Consumables>, ObservableValue<Consumables>>() {
@@ -210,34 +243,38 @@ public class ConsumablesUseController {
 
         TableColumn<ConsumablesUse, Double> numberColumn = new TableColumn<>("Количество");
         numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
-        numberColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
 
-        typeColumn.setOnEditCommit((TableColumn.CellEditEvent<ConsumablesUse, TypesEnum> event) ->{
-            TablePosition<ConsumablesUse, TypesEnum> pos = event.getTablePosition();
-            ConsumablesUse consumablesUse = event.getTableView().getItems().get(pos.getRow());
-            consumablesUse.setType(event.getNewValue());
-            try {
-                nameColumn.setCellFactory(ComboBoxTableCell.forTableColumn(consumablesManager.getByType(typeColumn.getCellData(consumables_table.getSelectionModel().getSelectedIndex()))));
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+        if(role == work.getMasterId() || role==0){
+            typeColumn.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(TypesEnum.values())));
+            numberColumn.setCellFactory(TextFieldTableCell.forTableColumn(systemHelper.getDoubleConverter("Неверно введено количество расходника!")));
+
+            typeColumn.setOnEditCommit((TableColumn.CellEditEvent<ConsumablesUse, TypesEnum> event) ->{
+                TablePosition<ConsumablesUse, TypesEnum> pos = event.getTablePosition();
+                ConsumablesUse consumablesUse = event.getTableView().getItems().get(pos.getRow());
+                consumablesUse.setType(event.getNewValue());
+                try {
+                    nameColumn.setCellFactory(ComboBoxTableCell.forTableColumn(consumablesManager.getByType(typeColumn.getCellData(consumables_table.getSelectionModel().getSelectedIndex()))));
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
 
 //            changeCheck(consumablesUse, event.getNewValue().toString());
-        });
+            });
 
-        nameColumn.setOnEditCommit((TableColumn.CellEditEvent<ConsumablesUse, Consumables> event) ->{
-            TablePosition<ConsumablesUse, Consumables> pos = event.getTablePosition();
-            ConsumablesUse consumablesUse = event.getTableView().getItems().get(pos.getRow());
-            consumablesUse.setConsumableId(event.getNewValue().getConsumableId());
-            changeCheck(consumablesUse, event.getNewValue().toString());
-        });
+            nameColumn.setOnEditCommit((TableColumn.CellEditEvent<ConsumablesUse, Consumables> event) ->{
+                TablePosition<ConsumablesUse, Consumables> pos = event.getTablePosition();
+                ConsumablesUse consumablesUse = event.getTableView().getItems().get(pos.getRow());
+                consumablesUse.setConsumableId(event.getNewValue().getConsumableId());
+                changeCheck(consumablesUse, event.getNewValue().toString());
+            });
 
-        numberColumn.setOnEditCommit((TableColumn.CellEditEvent<ConsumablesUse, Double> event) ->{
-            TablePosition<ConsumablesUse, Double> pos = event.getTablePosition();
-            ConsumablesUse consumablesUse = event.getTableView().getItems().get(pos.getRow());
-            consumablesUse.setNumber(event.getNewValue());
-            changeCheck(consumablesUse, event.getNewValue().toString());
-        });
+            numberColumn.setOnEditCommit((TableColumn.CellEditEvent<ConsumablesUse, Double> event) ->{
+                TablePosition<ConsumablesUse, Double> pos = event.getTablePosition();
+                ConsumablesUse consumablesUse = event.getTableView().getItems().get(pos.getRow());
+                consumablesUse.setNumber(event.getNewValue());
+                changeCheck(consumablesUse, event.getNewValue().toString());
+            });
+        }
 
         consumables_table.setItems(consumablesUseManager.getByWorkId(this.work.getWorkId()));
         consumables_table.getColumns().addAll(typeColumn, nameColumn, numberColumn);
@@ -247,7 +284,7 @@ public class ConsumablesUseController {
 
     private void changeCheck(ConsumablesUse consumablesUse, String message){
         Optional<ButtonType> option = systemHelper.showConfirmMessage("Изменить поле", "Вы действительно хотите изменить поле?", message).showAndWait();
-        if (option.isPresent()) {
+        if (option.get() == ButtonType.OK) {
             try {
                 consumablesUseManager.update(consumablesUse);
             } catch (SQLException throwables) {
@@ -270,17 +307,18 @@ public class ConsumablesUseController {
 
     private void addConsumableUse(){
         if(!number_enter.getText().isEmpty() && name_enter.getValue() != null && type_enter.getValue() != null){
-            Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Расходник").showAndWait();
-            if (option.isPresent()) {
-                try {
-                    consumablesUseManager.add(new ConsumablesUse(this.work.getWorkId(), name_enter.getValue().getConsumableId(), Double.parseDouble(number_enter.getText())));
-                    consumables_table.setItems(consumablesUseManager.getByWorkId(this.work.getWorkId()));
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+            if(systemHelper.countCheck(number_enter.getText())){
+                Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Расходник").showAndWait();
+                if (option.get() == ButtonType.OK) {
+                    try {
+                        consumablesUseManager.add(new ConsumablesUse(this.work.getWorkId(), name_enter.getValue().getConsumableId(), Double.parseDouble(number_enter.getText())));
+                        consumables_table.setItems(consumablesUseManager.getByWorkId(this.work.getWorkId()));
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+                    System.out.println("Add new!");
                 }
-                System.out.println("Add new!");
-            }
+            } else  systemHelper.showErrorMessage("Ошибка", "Неверно введено количество расходника!");
         } else systemHelper.showErrorMessage("Ошибка", "Введите данные!");
     }
-
 }

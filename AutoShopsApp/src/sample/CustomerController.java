@@ -111,13 +111,17 @@ public class CustomerController {
     public void setUserName(String name){
         userName = name;
         user_label.setText(name);
-        systemHelper.initMenu(name, out_button, shops_button, masters_button, model_button, cars_button, client_button,
+        systemHelper.initMenu(name, 0, out_button, shops_button, masters_button, model_button, cars_button, client_button,
                 consum_button, work_button, cintract_button, service_button, math_button, users_button);
     }
 
     private void initButtons(){
         add_button.setOnAction(event -> {
-            addCustomer();
+            try {
+                addCustomer();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         });
     }
 
@@ -146,23 +150,38 @@ public class CustomerController {
         nameColumn.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) -> {
             TablePosition<Customer, String> pos = event.getTablePosition();
             Customer customer = event.getTableView().getItems().get(pos.getRow());
-            customer.setFullName(event.getNewValue());
-            changeCheck(customer, "ФИО клиента");
+            if(systemHelper.fullNameCheck(event.getNewValue())){
+                customer.setFullName(event.getNewValue());
+                changeCheck(customer, event.getNewValue());
+            } else {
+                systemHelper.showErrorMessage("Ошибка", "ФИО введены неверно!");
+                try {
+                    customers_table.setItems(customerManager.getAll());
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
         });
 
         addressColumn.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) ->{
             TablePosition<Customer, String> pos = event.getTablePosition();
             Customer customer = event.getTableView().getItems().get(pos.getRow());
             customer.setAddress(event.getNewValue());
-            changeCheck(customer, "Адресс");
+            changeCheck(customer, event.getNewValue());
         });
 
         phoneColumn.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) ->{
             TablePosition<Customer, String> pos = event.getTablePosition();
             Customer customer = event.getTableView().getItems().get(pos.getRow());
             if (systemHelper.phoneCheck(event.getNewValue())){
-                customer.setPhone(event.getNewValue());
-                changeCheck(customer, "Телефон");
+                try {
+                    if(!customerManager.getByPhone(event.getNewValue())){
+                        customer.setPhone(event.getNewValue());
+                        changeCheck(customer, event.getNewValue());
+                    } else systemHelper.showErrorMessage("Ошибка", "Клиент с таким номером телефона уже существует!");
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
             } else {
                 systemHelper.showErrorMessage("Ошибка", "Неверный формат телефона!");
                 try {
@@ -178,7 +197,7 @@ public class CustomerController {
             Customer customer = event.getTableView().getItems().get(pos.getRow());
             if (systemHelper.passportCheck(event.getNewValue())){
                 customer.setPassport(event.getNewValue());
-                changeCheck(customer, "Серия и номер паспорта");
+                changeCheck(customer, event.getNewValue());
             } else {
                 systemHelper.showErrorMessage("Ошибка", "Неверные серия и номер паспорта!");
                 try {
@@ -209,21 +228,25 @@ public class CustomerController {
         }
     }
 
-    private void addCustomer(){
+    private void addCustomer() throws SQLException {
         if(!name_enter.getText().isEmpty() && !address_enter.getText().isEmpty() && !phone_enter.getText().isEmpty() && !passport_enter.getText().isEmpty()){
             if (systemHelper.phoneCheck(phone_enter.getText())){
                 if (systemHelper.passportCheck(passport_enter.getText())){
-                    Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Клиент").showAndWait();
-                    if (option.get() == ButtonType.OK) {
-                        try {
-                            Customer customer = customerManager.add(new Customer(name_enter.getText(), address_enter.getText(), phone_enter.getText(), passport_enter.getText()));
-                            customers_table.setItems(customerManager.getAll());
-                            goToCars(customer);
-                        } catch (SQLException | IOException throwables) {
-                            throwables.printStackTrace();
-                        }
-                        System.out.println("Add new!");
-                    }
+                    if(systemHelper.fullNameCheck(name_enter.getText())){
+                        if(!customerManager.getByPhone(phone_enter.getText())){
+                            Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить запись", "Вы действительно хотите добавить запись?", "Клиент").showAndWait();
+                            if (option.get() == ButtonType.OK) {
+                                try {
+                                    Customer customer = customerManager.add(new Customer(name_enter.getText(), address_enter.getText(), phone_enter.getText(), passport_enter.getText()));
+                                    customers_table.setItems(customerManager.getAll());
+                                    goToCars(customer);
+                                } catch (SQLException | IOException throwables) {
+                                    throwables.printStackTrace();
+                                }
+                                System.out.println("Add new!");
+                            }
+                        } else systemHelper.showErrorMessage("Ошибка", "Клиент с таким номером телефона уже существует!");
+                    } else systemHelper.showErrorMessage("Ошибка", "ФИО введены неверно!");
                 } else systemHelper.showErrorMessage("Ошибка", "Серия и номер паспарта должно состоять из 10 символов!");
             } else systemHelper.showErrorMessage("Ошибка", "Неверный формат телефона!");
         } else systemHelper.showErrorMessage("Ошибка", "Введите данные!");
@@ -256,11 +279,14 @@ public class CustomerController {
     public void goToCars(Customer customer) throws IOException, SQLException {
         Optional<ButtonType> option = systemHelper.showConfirmMessage("Добавить автомобиль", "Добавить автомобить клиента?", customer.toString()).showAndWait();
         if (option.get() == ButtonType.OK) {
-            cars_button.getScene().getWindow().hide();
-            FXMLLoader loader = systemHelper.openWindow("cars.fxml", cars_button.getScene().getWidth());
-            CarsController controller = loader.getController();
-            controller.setUserName(userName);
-            controller.setCustomer(customer);
+            try {
+                FXMLLoader loader = systemHelper.showScene("cars.fxml");
+                CarsController controller = loader.getController();
+                controller.setUserName(userName);
+                controller.setCustomer(customer);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
         }
     }
 }

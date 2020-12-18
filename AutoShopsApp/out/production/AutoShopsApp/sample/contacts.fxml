@@ -27,60 +27,6 @@
                </BorderPane.margin>
             </TableView>
          </center>
-         <bottom>
-            <GridPane style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER">
-               <columnConstraints>
-                  <ColumnConstraints />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <JFXButton fx:id="add_button" layoutX="592.0" layoutY="20.0" maxWidth="375.0" prefHeight="27.0" prefWidth="170.0" style="-fx-background-color: #006fb7;" text="Добавить" textFill="WHITE" GridPane.columnIndex="5">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </JFXButton>
-                  <JFXButton fx:id="delete_button" layoutX="422.0" layoutY="20.0" maxWidth="375.0" onAction="#deleteRow" prefHeight="27.0" prefWidth="170.0" style="-fx-background-color: #006fb7;" text="Удалить запись" textFill="WHITE" GridPane.columnIndex="6">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </JFXButton>
-                  <DatePicker fx:id="open_data_enter" promptText="Дата открытия контракта" GridPane.columnIndex="1">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </DatePicker>
-                  <DatePicker fx:id="close_data_enter" promptText="Дата закрытия контракта" GridPane.columnIndex="2">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </DatePicker>
-                  <ComboBox fx:id="status_enter" maxWidth="450.0" prefWidth="170.0" promptText="Статус" GridPane.columnIndex="3">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </ComboBox>
-                  <ComboBox fx:id="auto_number_enter" maxWidth="375.0" prefWidth="170.0" promptText="Госномер авто" GridPane.columnIndex="4">
-                     <GridPane.margin>
-                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                     </GridPane.margin>
-                  </ComboBox>
-               </children>
-               <padding>
-                  <Insets bottom="16.0" left="50.0" right="50.0" top="16.0" />
-               </padding>
-               <BorderPane.margin>
-                  <Insets left="20.0" right="20.0" />
-               </BorderPane.margin>
-            </GridPane>
-         </bottom>
          <right>
             <AnchorPane prefHeight="483.0" prefWidth="20.0" style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER" />
          </right>
@@ -114,6 +60,59 @@
                </children>
             </GridPane>
          </top>
+         <bottom>
+            <GridPane BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <ComboBox fx:id="auto_number_enter" maxWidth="500.0" prefWidth="170.0" promptText="Госномер авто" GridPane.columnIndex="3">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                  </ComboBox>
+                  <DatePicker fx:id="close_data_enter" maxWidth="500.0" promptText="Дата закрытия контракта" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                  </DatePicker>
+                  <JFXButton fx:id="add_button" maxWidth="375.0" prefHeight="27.0" prefWidth="170.0" style="-fx-background-color: #006fb7;" text="Добавить" textFill="WHITE" GridPane.columnIndex="4">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                  </JFXButton>
+                  <JFXButton fx:id="delete_button" maxWidth="375.0" onAction="#deleteRow" prefHeight="27.0" prefWidth="170.0" style="-fx-background-color: #006fb7;" text="Удалить запись" textFill="WHITE" GridPane.columnIndex="5">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                  </JFXButton>
+                  <DatePicker fx:id="open_data_enter" maxWidth="500.0" promptText="Дата открытия контракта">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                  </DatePicker>
+                  <ComboBox fx:id="status_enter" maxWidth="500.0" prefWidth="170.0" promptText="Статус" GridPane.columnIndex="2">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                  </ComboBox>
+               </children>
+               <BorderPane.margin>
+                  <Insets left="20.0" right="20.0" />
+               </BorderPane.margin>
+               <padding>
+                  <Insets bottom="16.0" left="50.0" right="50.0" top="16.0" />
+               </padding>
+            </GridPane>
+         </bottom>
       </BorderPane>
    </center>
    <left>
