@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="600.0" maxWidth="800.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ui.Controller">
+   <children>
+      <ImageView fx:id="main_image" fitHeight="93.0" fitWidth="179.0" layoutX="316.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../asseats/logo.png" />
+         </image>
+      </ImageView>
+      <AnchorPane layoutY="110.0" prefHeight="492.0" prefWidth="800.0" style="-fx-background-color: #87CEFA;">
+         <children>
+            <PasswordField id="main_pass" fx:id="main_pass" layoutX="240.0" layoutY="225.0" prefHeight="38.0" prefWidth="319.0" promptText="Пароль" style="-fx-background-color: #FFFFFF;">
+               <font>
+                  <Font name="Roboto Medium" size="12.218181610107422" />
+               </font>
+            </PasswordField>
+            <TextField id="main_login" fx:id="main_login" layoutX="240.0" layoutY="176.0" prefHeight="38.0" prefWidth="319.0" promptText="Логин" style="-fx-background-color: #FFFFFF;">
+               <font>
+                  <Font name="Roboto Medium" size="12.218181610107422" />
+               </font>
+            </TextField>
+            <JFXButton id="main_enter_button" fx:id="main_enter_button" layoutX="240.0" layoutY="285.0" prefHeight="38.0" prefWidth="113.0" style="-fx-background-color: #006fb7;" text="Войти" textFill="WHITE">
+               <font>
+                  <Font name="Roboto Medium" size="12.218181610107422" />
+               </font>
+            </JFXButton>
+            <Label layoutX="291.0" layoutY="96.0" prefHeight="64.0" prefWidth="218.0" text="Авторизация" textFill="#006fb7">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

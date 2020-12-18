@@ -24,7 +24,7 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws Exception{
         initDatabase();
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("ui/sample.fxml"));
         activeScene = new Scene(root, 800, 600);
         primaryStage.setScene(activeScene);
         myStage = primaryStage;
@@ -59,7 +59,7 @@ public class Main extends Application
 //        return loader;
 //    }
 
-    protected FXMLLoader showScene(String path) throws IOException {
+    public FXMLLoader showScene(String path) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
         Parent root = loader.load();
         if(!path.equals("sample.fxml")){

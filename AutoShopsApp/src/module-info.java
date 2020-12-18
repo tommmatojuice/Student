@@ -9,4 +9,9 @@ module AutoShopsApp {
     requires java.datatransfer;
     requires java.desktop;
     opens sample;
+    opens sample.ui;
+    opens sample.asseats;
+    opens data.entity;
+    opens data.manager;
+    opens data.enumes;
 }
